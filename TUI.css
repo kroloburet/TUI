@@ -1,0 +1,1414 @@
+@charset "UTF-8";
+
+/**
+ * TUI styles
+ *
+ * Примеры применения и документация по API
+ * на странице ./index.html
+ *
+ * @see ./index.html
+ * @author Sergey Nizhnik <kroloburet@gmail.com>
+ */
+
+/**
+ * Basic styles
+ */
+
+/*---------------------------------------------- TUI variables ---*/
+:root {
+    --font-base: 100%/1.5em Arial;
+    --radius-border: 3px;
+    --color-active-bg: rgba(0, 0, 0, .05);
+    --color-base-bg: #ffffff;
+    --color-base: #e7d977;
+    --color-font: #291000;
+    --color-mark: #ffef78;
+    --color-link: #0081a2;
+    --color-link-hover: #ff3636;
+    --color-green: #6ca200;
+    --color-red: #ff3300;
+    --color-blue: #0e7aa9;
+    --color-yellow: #e5ca00;
+    --color-gray: #999999;
+    --color-bg-green: #8cf097;
+    --color-bg-red: #f0ac8c;
+    --color-bg-blue: #cfe1ff;
+    --color-bg-yellow: #f4f097;
+    --color-bg-gray: #e3e3e3;
+    --color-form: #437ee0;
+    --color-form-border: #4a76be;
+    --color-form-disabled: #bbbbbb;
+    --color-form-field-bg: #ffffff;
+    --color-font-btn: #ffffff;
+    --color-font-field: var(--color-font);
+    --notice-color-font: #000000;
+    --hint-color-font: #000000;
+    --hint-color-border: #999999;
+    --hint-color-border-shadow: #333333;
+    --hint-color-bg: #f9f9f9;
+    --popup-color-box-bg: rgba(0, 0, 0, .95);
+    --popup-color-bg: #ffffff;
+    --popup-color-font: var(--color-font);
+    --popup-color-btn: var(--color-link);
+    --popup-color-btn-hover: var(--color-link-hover);
+    --menu-color-bg: var(--color-base);
+    --menu-color-font: var(--color-font);
+}
+
+/*---------------------------------------------- Layouts & typographic ---*/
+* {
+    box-sizing: border-box;
+}
+
+*, :focus, :active, :visited, :hover {
+    outline: none;
+    outline-offset: 0;
+}
+
+::-moz-focus-outer, ::-moz-focus-inner, :-moz-focusring {
+    border-color: transparent;
+}
+
+body {
+    margin: 0 auto;
+    padding: 0 3%;
+    font: var(--font-base);
+    color: var(--color-font);
+}
+
+@media (max-width: 600px) {
+    body {
+        font-size: 105%;
+    }
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section, main {
+    display: block;
+}
+
+figure {
+    margin: 0;
+}
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+object, embed, video {
+    max-width: 100%;
+}
+
+video {
+    width: 100%;
+    height: auto;
+}
+
+img[src*="maps.gstatic.com"], img[src*="googleapis.com"] {
+    max-width: none;
+}
+
+img, canvas {
+    box-sizing: border-box;
+    max-width: 100%;
+    vertical-align: middle;
+    border: none;
+    height: auto;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover {
+    color: var(--color-link-hover);
+    text-decoration: none;
+}
+
+a[target="_blank"], .TUI_blank {
+    cursor: url(imgs/pointer_blank.png), pointer;
+}
+
+blockquote {
+    position: relative;
+    font-style: italic;
+    margin: 0 0 1.5em 1.5em;
+    padding: 0 0 0 1.5em;
+    border-left: 1px solid var(--color-base);
+}
+
+s, del {
+    text-decoration: line-through;
+}
+
+hr {
+    padding: 0;
+    margin: .5em 0;
+    border: none;
+    border-bottom: var(--color-base) solid 1px;
+    height: 0;
+    clear: both;
+}
+
+abbr {
+    text-decoration: none;
+    border-bottom: var(--color-gray) dashed 1px;
+    cursor: help;
+}
+
+code {
+    padding: .2em;
+    background-color: rgba(0, 0, 0, .2);
+    color: var(--color-font);
+    font-weight: normal;
+    font-style: normal;
+    font-family: monospace;
+}
+
+p {
+    margin: 0 0 1em 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: .5em 0;
+    padding: 0;
+    line-height: 1.3em;
+    word-break: break-word;
+}
+
+pre {
+    padding: 0;
+    margin: 0 0 1.5em 0;
+    font-size: 90%;
+    line-height: normal;
+    overflow: auto
+}
+
+mark {
+    background-color: var(--color-mark);
+    padding: .2em;
+}
+
+ul, ol {
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
+#copy {
+    opacity: .5;
+}
+
+#copy:hover {
+    opacity: 1;
+}
+
+/*---------------------------------------------- Form elements ---*/
+input[name="fuck_bot"] {
+    display: none;
+    visibility: hidden;
+}
+
+.TUI_invalid {
+    border-color: var(--color-red) !important;
+}
+
+.TUI_input, .TUI_textarea, .TUI_select, .TUI_checkbox, .TUI_radio, .TUI_file, .TUI_range, .TUI_search, .TUI_number {
+    position: relative;
+    display: block;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+
+.TUI_input input, .TUI_textarea textarea, .TUI_search input, .TUI_select select, .TUI_select, .TUI_number input, .TUI_number, .TUI_file {
+    display: block;
+    padding: .3em;
+    width: 100%;
+    min-width: 0;
+    border: var(--color-form-border) solid 1px;
+    border-radius: var(--radius-border);
+    background-color: var(--color-form-field-bg);
+    font: var(--font-base);
+    color: var(--color-font-field);
+    box-shadow: none;
+    overflow: auto;
+}
+
+/*--- TUI_fieldset ---*/
+.TUI_fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0 -10px 0 0;
+    padding: 0;
+}
+
+.TUI_fieldset label {
+    width: auto;
+    flex-grow: 1;
+}
+
+.TUI_fieldset > * {
+    margin: 0 10px 10px 0;
+}
+
+.TUI_fieldset.TUI_align-l {
+    justify-content: flex-start;
+}
+
+.TUI_fieldset.TUI_align-r {
+    justify-content: flex-end;
+}
+
+.TUI_fieldset.TUI_align-c {
+    justify-content: center;
+}
+
+/*--- TUI_file ---*/
+.TUI_file {
+    padding: 0;
+    cursor: pointer;
+}
+
+.TUI_file input[type="file"] {
+    padding: .3em;
+    background-color: var(--color-form);
+    color: var(--color-font-btn);
+    cursor: pointer;
+}
+
+/*--- TUI_range ---*/
+.TUI_range {
+    display: flex;
+    align-items: center;
+}
+
+.TUI_range input[type="range"] {
+    width: 100%;
+    padding: 0;
+    margin: .7em 0;
+    -webkit-appearance: none;
+    height: 1px;
+    background-color: var(--color-form-border);
+    border: none;
+    order: 1;
+    cursor: pointer;
+}
+
+.TUI_range input[type="range"]::-ms-track {
+    background-color: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+
+.TUI_range input[type="range"]::-ms-thumb {
+    background-color: var(--color-form);
+    border: var(--color-form-border) solid 1px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.TUI_range input[type="range"]::-moz-range-thumb {
+    -moz-appearance: none;
+    background-color: var(--color-form);
+    border: var(--color-form-border) solid 1px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.TUI_range input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: var(--color-form);
+    border: var(--color-form-border) solid 1px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/*--- TUI_number ---*/
+.TUI_number {
+    display: flex;
+    padding: 0;
+}
+
+.TUI_number input[type="number"] {
+    border: none;
+    background-color: transparent;
+}
+
+
+/*--- TUI_select ---*/
+.TUI_select {
+    padding: 0;
+}
+
+.TUI_select select {
+    border: none;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    padding-right: 2.5em;
+    cursor: pointer;
+}
+
+.TUI_select select::-ms-expand {
+    display: none;
+}
+
+.TUI_select::after {
+    position: absolute;
+    right: 0;
+    top: 0;
+    min-width: 1.3em;
+    height: 100%;
+    line-height: 1.2em;
+    content: "\2261";
+    text-align: center;
+    border-left: var(--color-form-border) solid 1px;
+    background-color: var(--color-form);
+    color: var(--color-font-btn);
+    font-size: 1.7em;
+}
+
+.TUI_select select[multiple], .TUI_select select[size] {
+    height: auto;
+}
+
+/*--- TUI_checkbox & TUI_radio ---*/
+.TUI_checkbox, .TUI_radio {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+}
+
+.TUI_checkbox input[type="checkbox"], .TUI_radio input[type="radio"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    visibility: hidden;
+}
+
+.TUI_checkbox .custom-checkbox, .TUI_radio .custom-radio {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 .3em 0 0;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--color-form-border);
+    position: relative;
+}
+
+.TUI_checkbox .custom-checkbox {
+    display: inline-flex;
+    border-radius: var(--radius-border);
+    box-shadow: inset 0 0 0 12px var(--color-form-field-bg);
+    top: -2px;
+}
+
+.TUI_checkbox .custom-checkbox::before {
+    content: "";
+    display: none;
+    width: 5px;
+    height: 10px;
+    margin: 1px auto auto auto;
+    border: 2px solid var(--color-form-field-bg);
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+    box-shadow: 1px 1px 0 .02em var(--color-form-border);
+}
+
+.TUI_checkbox input[type="checkbox"]:checked + .custom-checkbox {
+    border-color: var(--color-form-border);
+    background-color: var(--color-form);
+    box-shadow: none;
+}
+
+.TUI_checkbox input[type="checkbox"]:checked + .custom-checkbox::before {
+    display: block;
+}
+
+.TUI_radio .custom-radio {
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 12px var(--color-form-field-bg);
+    top: -2px;
+}
+
+.TUI_radio input[type="radio"]:checked + .custom-radio {
+    border-color: var(--color-form-border);
+    background-color: var(--color-form);
+    box-shadow: inset 0 0 0 4px var(--color-form-field-bg), inset 0 0 0 5px var(--color-form-border);
+}
+
+/*--- TUI_button ---*/
+.TUI_fieldset button, .TUI_fieldset input[type="reset"], .TUI_fieldset input[type="submit"], .TUI_fieldset input[type="button"], .TUI_fieldset .TUI_btn-link, input[type="button"], input[type="submit"], input[type="reset"], button, .TUI_btn-link {
+    display: inline-block;
+    margin: 0 10px 10px 0;
+    padding: .3em .5em;
+    font: var(--font-base);
+    text-align: center;
+    text-decoration: none;
+    color: var(--color-font-btn);
+    border: 1px solid var(--color-form-border);
+    border-radius: var(--radius-border);
+    background-color: var(--color-form);
+    cursor: pointer;
+    box-shadow: none;
+    vertical-align: middle;
+}
+
+input[type="button"]:not([disabled]):hover, input[type="submit"]:not([disabled]):hover, input[type="reset"]:not([disabled]):hover, button:not([disabled]):hover, .TUI_btn-link:hover {
+    box-shadow: inset 0 3px 10px rgba(255, 255, 255, .2);
+    border-color: rgba(0, 0, 0, .4);
+}
+
+input[type="button"]:not([disabled]):active, input[type="submit"]:not([disabled]):active, input[type="reset"]:not([disabled]):active, button:not([disabled]):active, .TUI_btn-link:active {
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, .1);
+    border-color: rgba(0, 0, 0, .6);
+}
+
+.TUI_btn-link {
+    white-space: nowrap;
+}
+
+.TUI_btn-link:hover {
+    color: var(--color-font-btn);
+}
+
+/*--- TUI_search ---*/
+.TUI_search {
+    display: flex;
+}
+
+.TUI_search input[type="search"] {
+    border-right: none;
+    border-radius: var(--radius-border) 0 0 var(--radius-border);
+}
+
+.TUI_search input[type="button"], .TUI_search button, .TUI_search .TUI_btn-link {
+    margin: 0;
+    padding: .3em .5em;
+    border-radius: 0 var(--radius-border) var(--radius-border) 0;
+    color: var(--color-font-btn);
+}
+
+@media (max-width: 350px) {
+    .TUI_search {
+        flex-direction: column;
+    }
+
+    .TUI_search input[type="search"] {
+        margin-bottom: 10px;
+        border: var(--color-form-border) solid 1px;
+        border-radius: var(--radius-border);
+    }
+
+    .TUI_search input[type="button"], .TUI_search button, .TUI_search .TUI_btn-link {
+        padding: .5em;
+        border-radius: var(--radius-border);
+    }
+}
+
+/*--- Inline form elements ---*/
+.TUI_checkbox.inline, .TUI_radio.inline, .TUI_input.inline, .TUI_select.inline, .TUI_textarea.inline, .TUI_file.inline, .TUI_range.inline, .TUI_search.inline, .TUI_number.inline {
+    width: auto;
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.TUI_range.inline, .TUI_number.inline {
+    display: inline-flex;
+}
+
+.TUI_checkbox.inline:last-child, .TUI_radio.inline:last-child, .TUI_input.inline:last-child, .TUI_select.inline:last-child, .TUI_textarea.inline:last-child, .TUI_file.inline:last-child, .TUI_range.inline:last-child, .TUI_number.inline:last-child {
+    margin-right: 0;
+}
+
+/*--- Disabled form elements ---*/
+input[type="url"][disabled], input[type="phone"][disabled], input[type="number"][disabled], input[type="datetime"][disabled], input[type="date"][disabled], input[type="month"][disabled], input[type="color"][disabled], input[type="time"][disabled], input[type="search"][disabled], input[type="text"][disabled], input[type="password"][disabled], input[type="tel"][disabled], input[type="email"][disabled], input[type="file"][disabled], textarea[disabled], select[disabled] {
+    cursor: not-allowed;
+    color: var(--color-form-disabled);
+}
+
+input[type="button"][disabled], input[type="submit"][disabled], input[type="reset"][disabled], button[disabled], .TUI_range input[type="range"][disabled], .TUI_radio input[type="radio"][disabled] + .custom-radio, .TUI_checkbox input[type="checkbox"][disabled] + .custom-checkbox {
+    cursor: not-allowed;
+    background-color: var(--color-form-disabled);
+}
+
+.TUI_range input[type="range"][disabled] + .TUI_InputRange-info {
+    color: var(--color-form-disabled);
+}
+
+.TUI_range input[type="range"][disabled]::-webkit-slider-thumb, .TUI_range input[type="range"][disabled]::-moz-range-thumb, .TUI_range input[type="range"][disabled]::-ms-thumb {
+    background-color: var(--color-form-disabled);
+    border-color: var(--color-form-disabled);
+    cursor: not-allowed;
+}
+
+/*---------------------------------------------- Notifications ---*/
+.TUI_notice-success, .TUI_notice-error, .TUI_notice-warning, .TUI_notice-info, .TUI_notice-process {
+    display: inline-block;
+    position: relative;
+    padding: 1em 1em 1em 4.5em;
+    margin: 0 0 1em 0;
+    border-radius: var(--radius-border);
+    color: var(--notice-color-font);
+}
+
+.TUI_notice-success hr, .TUI_notice-error hr, .TUI_notice-warning hr, .TUI_notice-info hr, .TUI_notice-process hr {
+    border-bottom: 1px solid rgba(255, 255, 255, .7);
+}
+
+.TUI_notice-success::before, .TUI_notice-error::before, .TUI_notice-warning::before, .TUI_notice-info::before, .TUI_notice-process::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 3.5em;
+    display: inline-block;
+    border-right: 1px solid rgba(255, 255, 255, .7);
+}
+
+.TUI_notice-success::after, .TUI_notice-error::after, .TUI_notice-warning::after, .TUI_notice-info::after, .TUI_notice-process::after {
+    position: absolute;
+    top: 50%;
+    left: 1em;
+    min-width: 1em;
+    text-align: center;
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-size: 1.3em;
+    line-height: 0;
+}
+
+.TUI_notice-process::after {
+    -webkit-animation: fa-spin 2s linear infinite;
+    animation: fa-spin 2s linear infinite;
+}
+
+.TUI_notice-success {
+    background-color: var(--color-bg-green);
+}
+
+.TUI_notice-success::after {
+    content: "\f00c";
+}
+
+.TUI_notice-warning {
+    background-color: var(--color-bg-yellow);
+}
+
+.TUI_notice-warning::after {
+    content: "\f071";
+}
+
+.TUI_notice-error {
+    background-color: var(--color-bg-red);
+}
+
+.TUI_notice-error::after {
+    content: "\f00d";
+}
+
+.TUI_notice-info {
+    background-color: var(--color-bg-blue);
+}
+
+.TUI_notice-info::after {
+    content: "\f129";
+}
+
+.TUI_notice-process {
+    background-color: var(--color-bg-gray);
+}
+
+.TUI_notice-process::after {
+    content: "\f110";
+}
+
+/*---Mini notifications----*/
+.TUI_notice-success.mini, .TUI_notice-error.mini, .TUI_notice-warning.mini, .TUI_notice-info.mini, .TUI_notice-process.mini {
+    font-size: 75%;
+    line-height: 1.3em;
+    padding: .5em .5em .5em 3.3em;
+}
+
+.TUI_notice-success.mini::before, .TUI_notice-error.mini::before, .TUI_notice-warning.mini::before, .TUI_notice-info.mini::before, .TUI_notice-process.mini::before {
+    left: 2.5em;
+}
+
+.TUI_notice-success.mini::after, .TUI_notice-error.mini::after, .TUI_notice-warning.mini::after, .TUI_notice-info.mini::after, .TUI_notice-process.mini::after {
+    left: .5em;
+}
+
+/*---------------------------------------------- Grid ---*/
+/*--- расчет:((100/кол.ячеек) - margin-left)+(margin-left/кол.ячеек) ---*/
+.TUI_row {
+    padding: 0;
+    margin-bottom: 1.5em;
+    display: flex;
+}
+
+.TUI_col-12 {
+    flex-basis: 100%;
+}
+
+.TUI_col-11 {
+    flex-basis: 91.416667%;
+}
+
+.TUI_col-10 {
+    flex-basis: 82.833334%;
+}
+
+.TUI_col-9 {
+    flex-basis: 74.25%;
+}
+
+.TUI_col-8 {
+    flex-basis: 65.666667%;
+}
+
+.TUI_col-7 {
+    flex-basis: 57.083334%;
+}
+
+.TUI_col-6 {
+    flex-basis: 48.5%;
+}
+
+.TUI_col-5 {
+    flex-basis: 39.916666%;
+}
+
+.TUI_col-4 {
+    flex-basis: 31.333333%;
+}
+
+.TUI_col-3 {
+    flex-basis: 22.75%;
+}
+
+.TUI_col-2 {
+    flex-basis: 14.166666%;
+}
+
+.TUI_col-1 {
+    flex-basis: 5.583333%;
+}
+
+.TUI_col-12, .TUI_col-11, .TUI_col-10, .TUI_col-9, .TUI_col-8, .TUI_col-7, .TUI_col-6, .TUI_col-5, .TUI_col-4, .TUI_col-3, .TUI_col-2, .TUI_col-1 {
+    margin-left: 3%;
+}
+
+.TUI_col-12:first-child, .TUI_col-11:first-child, .TUI_col-10:first-child, .TUI_col-9:first-child, .TUI_col-8:first-child, .TUI_col-7:first-child, .TUI_col-6:first-child, .TUI_col-5:first-child, .TUI_col-4:first-child, .TUI_col-3:first-child, .TUI_col-2:first-child, .TUI_col-1:first-child {
+    margin-left: 0;
+}
+
+form .TUI_row, form .TUI_col-12, form .TUI_col-11, form .TUI_col-10, form .TUI_col-9, form .TUI_col-8, form .TUI_col-7, form .TUI_col-6, form .TUI_col-5, form .TUI_col-4, form .TUI_col-3, form .TUI_col-2, form .TUI_col-1 {
+    margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+    .TUI_row {
+        flex-direction: column;
+        margin: 0;
+    }
+
+    .TUI_col-12, .TUI_col-11, .TUI_col-10, .TUI_col-9, .TUI_col-8, .TUI_col-7, .TUI_col-6, .TUI_col-5, .TUI_col-4, .TUI_col-3, .TUI_col-2, .TUI_col-1 {
+        flex-basis: 100%;
+        margin: 0 0 1.5em 0;
+    }
+}
+
+/*---------------------------------------------- Table ---*/
+table.TUI_table {
+    border-collapse: collapse;
+    display: block;
+    overflow-x: auto;
+    background-color: var(--color-base-bg);
+}
+
+.TUI_table td, .TUI_table th {
+    border: 1px solid var(--color-base);
+    width: 1%;
+    min-width: max-content;
+    padding: .25em .5em;
+    text-align: left;
+}
+
+.TUI_table th {
+    background-color: var(--color-base);
+}
+
+.TUI_table tr:hover {
+    background-color: var(--color-active-bg);
+}
+
+.TUI_table caption {
+    margin-bottom: .5em;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: left;
+}
+
+/*---------------------------------------------- Other classes ---*/
+.TUI_warn {
+    display: block;
+    margin: 0 0 1.5em 0;
+    padding: 0 0 0 .7em;
+    border-left: solid 1px var(--color-red);
+    font-size: 95%;
+    line-height: 1.2em;
+    font-style: italic;
+}
+
+.TUI_world {
+    cursor: url(imgs/pointer_world.png), pointer;
+}
+
+.TUI_full {
+    display: inline-block;
+    width: 100% !important;
+}
+
+.TUI_nowrap {
+    white-space: nowrap;
+}
+
+.TUI_align-l {
+    text-align: left;
+}
+
+.TUI_align-r {
+    text-align: right;
+}
+
+.TUI_align-c {
+    text-align: center;
+}
+
+.TUI_to-l {
+    float: left;
+}
+
+.TUI_to-r {
+    float: right;
+}
+
+.TUI_to-c {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.TUI_to-non {
+    float: none;
+}
+
+@media (max-width: 600px) {
+    .TUI_to-r {
+        float: none;
+    }
+}
+
+/*--- Text color ----*/
+.TUI_green {
+    color: var(--color-green) !important;
+}
+
+.TUI_red {
+    color: var(--color-red) !important;
+}
+
+.TUI_blue {
+    color: var(--color-blue) !important;
+}
+
+.TUI_yellow {
+    color: var(--color-yellow) !important;
+}
+
+.TUI_gray {
+    color: var(--color-gray) !important;
+}
+
+/*---Background color----*/
+.TUI_bg-g {
+    background-color: var(--color-bg-green) !important;
+}
+
+.TUI_bg-r {
+    background-color: var(--color-bg-red) !important;
+}
+
+.TUI_bg-b {
+    background-color: var(--color-bg-blue) !important;
+}
+
+.TUI_bg-y {
+    background-color: var(--color-bg-yellow) !important;
+}
+
+/*---------------------------------------------- Print styles ---*/
+@media print {
+    .TUI_noprint {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    img {
+        border: none !important;
+    }
+
+    * {
+        background: transparent !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+
+    a, a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]::after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]::after {
+        content: " (" attr(title) ")";
+    }
+
+    a::after, a[href^="javascript:"]::after, a[href^="#"]::after {
+        content: "";
+    }
+
+    pre, blockquote {
+        border: 1px solid #999999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tr, img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: .5cm
+    }
+
+    p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2, h3 {
+        page-break-after: avoid;
+    }
+}
+
+/**
+ * Helpers
+ */
+
+/*---------------------------------------------- TUI_Hint ---*/
+.TUI_Hint {
+    margin: 0;
+    padding: .5em;
+    max-width: 300px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: solid 1px var(--hint-color-border);
+    border-right-color: var(--hint-color-border-shadow);
+    border-bottom-color: var(--hint-color-border-shadow);
+    background-color: var(--hint-color-bg);
+    color: var(--hint-color-font);
+    text-align: left;
+    font-size: 11px;
+    line-height: normal;
+    font-style: normal;
+    visibility: hidden;
+    z-index: -1000;
+}
+
+.TUI_Hint.TUI_Hint-show {
+    visibility: visible;
+    z-index: 1000;
+}
+
+pre.TUI_Hint {
+    white-space: pre-line;
+    max-width: none;
+}
+
+/*---------------------------------------------- TUI_Lim ---*/
+.TUI_Lim {
+    display: flex;
+    align-items: center;
+    padding: .3em;
+    border: 1px solid transparent;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    color: var(--color-form-border);
+    font: var(--font-base);
+    white-space: nowrap;
+}
+
+.TUI_Lim::before {
+    content: "";
+    padding: .2em;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    transform: rotate(45deg);
+}
+
+/**
+ * Plugins
+ */
+
+/*---------------------------------------------- TUI_Notice ---*/
+.TUI_Notice-box {
+    display: flex;
+    padding: 4em 3%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: var(--popup-color-box-bg);
+    z-index: 99999;
+}
+
+.TUI_Notice-body {
+    overflow: hidden;
+}
+
+.TUI_Notice {
+    position: relative;
+    max-width: 50%;
+    margin: auto;
+}
+
+@media (max-width: 800px) {
+    .TUI_Notice {
+        max-width: 70%;
+    }
+}
+
+@media (max-width: 500px) {
+    .TUI_Notice {
+        max-width: 100%;
+    }
+}
+
+/*---------------------------------------------- TUI_Popup ---*/
+.TUI_Popup-box {
+    padding: 4em 3%;
+    position: fixed;
+    display: none;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: var(--popup-color-box-bg);
+    z-index: 9999;
+}
+
+.TUI_Popup-body {
+    overflow: hidden;
+}
+
+.TUI_Popup-box.TUI_Popup-show {
+    display: flex;
+}
+
+.TUI_Popup-box.TUI_Popup-show .TUI_Popup {
+    display: block;
+}
+
+.TUI_Popup {
+    display: none;
+    position: relative;
+    max-width: 100%;
+    padding: 1.5em;
+    margin: auto;
+    border: 1px solid var(--popup-color-font);
+    border-radius: var(--radius-border);
+    background-color: var(--popup-color-bg);
+    color: var(--popup-color-font);
+}
+
+.TUI_Popup .TUI_Popup-close {
+    position: absolute;
+    top: -1.5em;
+    right: 0;
+    color: var(--popup-color-btn);
+    font-size: 2em;
+    cursor: pointer;
+}
+
+.TUI_Popup .TUI_Popup-close:hover {
+    color: var(--popup-color-btn-hover);
+}
+
+@media (max-width: 400px) {
+    .TUI_Popup {
+        padding: .5em;
+    }
+
+    .TUI_Popup .TUI_Popup-close {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/*---------------------------------------------- TUI_Menu ---*/
+.TUI_Menu {
+}
+
+.TUI_Menu-activated {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: var(--menu-color-bg);
+}
+
+.TUI_Menu-activated li {
+    position: relative;
+    z-index: 100;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+.TUI_Menu-activated li a, .TUI_Menu-activated li span {
+    display: block;
+    padding: .5em .8em;
+    white-space: nowrap;
+    text-decoration: none;
+    font-size: 1.2em;
+    color: var(--menu-color-font);
+}
+
+.TUI_Menu-activated ul {
+    display: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    background-color: var(--menu-color-bg);
+}
+
+.TUI_Menu-activated ul li {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background-color: var(--menu-color-bg);
+}
+
+.TUI_Menu-activated ul ul {
+    left: 100%;
+    top: 0;
+}
+
+.TUI_Menu-activated .TUI_Menu-mark, .TUI_Menu-activated li a:hover, .TUI_Menu-activated li span:hover, .TUI_Menu-activated li:hover > a, .TUI_Menu-activated li:hover > span, .TUI_Menu-activated ul li a:hover, .TUI_Menu-activated ul li:hover > a, .TUI_Menu-activated ul li:hover > span {
+    background-color: var(--color-active-bg);
+}
+
+.TUI_Menu-activated li:hover > ul {
+    display: block;
+}
+
+.TUI_Menu-btn {
+    display: none;
+    margin: auto;
+    font-size: 410%;
+    font-style: normal;
+    text-align: center;
+    line-height: 1em;
+    background-color: var(--menu-color-bg);
+    cursor: pointer;
+}
+
+.TUI_Menu-activated .TUI_Menu-sub-btn {
+    display: none;
+    text-align: center;
+    font-style: normal;
+    background-color: var(--color-active-bg);
+    margin: 0;
+    padding: .4em .6em;
+    z-index: 100;
+    font-size: 150%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+}
+
+@media (max-width: 800px) {
+    .TUI_Menu-activated {
+        width: 100%;
+    }
+
+    .TUI_Menu-btn, .TUI_Menu-activated .TUI_Menu-sub-btn {
+        display: block;
+    }
+
+    .TUI_Menu-activated .TUI_Menu-sub-link {
+        margin-right: 2.3em;
+    }
+
+    .TUI_Menu-activated ul, .TUI_Menu-activated ul ul {
+        position: relative;
+        top: 0;
+        left: 0;
+        background-color: var(--color-active-bg);
+    }
+
+    .TUI_Menu-activated li a, .TUI_Menu-activated li span {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .TUI_Menu-activated .TUI_Menu-mark, .TUI_Menu-activated ul li, .TUI_Menu-activated li a:hover, .TUI_Menu-activated li span:hover, .TUI_Menu-activated li:hover > a, .TUI_Menu-activated li:hover > span, .TUI_Menu-activated ul li a:hover, .TUI_Menu-activated ul li:hover > a, .TUI_Menu-activated ul li:hover > span {
+        background: none;
+    }
+
+    .TUI_Menu-activated, .TUI_Menu-activated li:hover > ul {
+        display: none;
+    }
+
+    .TUI_Menu-show, .TUI_Menu-activated ul.TUI_Menu-show, .TUI_Menu-activated li:hover > ul.TUI_Menu-show {
+        display: block;
+    }
+}
+
+/*---------------------------------------------- TUI_Tab ---*/
+.TUI_Tab {
+}
+
+.TUI_Tab-activated {
+    width: 100%;
+    overflow: auto;
+    margin: 0 0 1.5em 0;
+    padding: 0;
+    text-align: left;
+    border-radius: var(--radius-border);
+}
+
+.TUI_Tab-activated dt {
+    float: left;
+    line-height: 1.5em;
+    padding: .3em .5em;
+    position: relative;
+    left: 0;
+    cursor: pointer;
+    font-size: 1.2em;
+    border-radius: var(--radius-border) var(--radius-border) 0 0;
+}
+
+.TUI_Tab-activated dt:hover {
+    background-color: var(--color-base);
+}
+
+.TUI_Tab-activated dd {
+    display: none;
+    float: right;
+    width: 100%;
+    margin: 2.4em 0 0 -100%;
+    padding: 1em;
+    overflow: auto;
+    background-color: var(--color-base-bg);
+    border-top: 2px solid var(--color-base);
+    border-radius: 0 0 var(--radius-border) var(--radius-border);
+    z-index: 2;
+}
+
+.TUI_Tab-activated .TUI_Tab-show {
+    background-color: var(--color-base);
+    z-index: 3;
+    cursor: default;
+}
+
+.TUI_Tab-activated .TUI_Tab-show:hover {
+    background-color: var(--color-base);
+}
+
+.TUI_Tab-activated .TUI_Tab-show + dd {
+    display: block;
+}
+
+@media (max-width: 600px) {
+    .TUI_Tab-activated dt {
+        float: none;
+        background-color: var(--color-base);
+        border-radius: 0;
+    }
+
+    .TUI_Tab-activated dd {
+        float: none;
+        margin: 0;
+        border: 1px solid var(--color-base);
+        border-radius: 0;
+    }
+
+    .TUI_Tab-activated dd:last-child {
+        border-radius: 0 0 var(--radius-border) var(--radius-border);
+    }
+}
+
+/*---------------------------------------------- TUI_InputFile ---*/
+.TUI_InputFile {
+}
+
+.TUI_InputFile-activated {
+    display: none;
+}
+
+.TUI_InputFile-activated + .TUI_InputFile-info {
+    display: inline-block;
+    color: var(--color-font-btn);
+    padding: .3em .6em;
+    background-color: var(--color-form);
+    border-right: var(--color-form-border) solid 1px;
+    cursor: pointer;
+}
+
+.TUI_InputFile-activated:hover + .TUI_InputFile-info {
+    filter: brightness(90%);
+}
+
+.TUI_InputFile-activated + .TUI_InputFile-info .TUI_InputFile-val {
+    display: inline-block;
+    padding: .2em;
+    margin-right: .2em;
+    line-height: 1;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: var(--radius-border);
+}
+
+.TUI_InputFile-activated[disabled] + .TUI_InputFile-info {
+    cursor: not-allowed;
+}
+
+/*---------------------------------------------- TUI_InputRange ---*/
+.TUI_InputRange {
+}
+
+.TUI_InputRange-activated + .TUI_InputRange-info {
+    margin-right: .5em;
+    background-color: var(--color-form);
+    position: relative;
+    padding: .3em;
+    text-align: center;
+    color: var(--color-font-btn);
+    border-radius: var(--radius-border);
+    border: 1px solid var(--color-form-border);
+    z-index: 0;
+    order: 0;
+}
+
+.TUI_InputRange-activated + .TUI_InputRange-info::after {
+    content: "";
+    width: .7em;
+    height: .7em;
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background-color: var(--color-form);
+    box-shadow: inset -1px 1px 0 0 var(--color-form-border);
+    z-index: -1;
+}
+
+/*---------------------------------------------- TUI_InputNumber ---*/
+.TUI_InputNumber {
+}
+
+.TUI_InputNumber-activated {
+    -moz-appearance: textfield;
+}
+
+.TUI_InputNumber-activated::-webkit-inner-spin-button, .TUI_InputNumber-activated::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.TUI_InputNumber-inc, .TUI_InputNumber-dec {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    min-width: 1.3em;
+    font-size: 1.7em;
+    color: var(--color-font-btn);
+    background-color: var(--color-form);
+    cursor: pointer;
+}
+
+.TUI_InputNumber-activated[disabled] ~ .TUI_InputNumber-inc, .TUI_InputNumber-activated[disabled] ~ .TUI_InputNumber-dec {
+    cursor: not-allowed;
+    color: var(--color-form-disabled);
+}
+
+.TUI_InputNumber-inc:hover, .TUI_InputNumber-dec:hover {
+    filter: brightness(90%);
+}
+
+.TUI_InputNumber-dec {
+    border-left: 1px solid var(--color-form-border);
+    border-right: 1px solid var(--color-form-border);
+}
+
+/*---------------------------------------------- TUI_SelectSearch ---*/
+.TUI_SelectSearch {
+}
+
+.TUI_select .TUI_SelectSearch-input {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: .3em 2.5em .3em .5em;
+    font: var(--font-base);
+    color: var(--color-font-field);
+    border-radius: var(--radius-border) var(--radius-border) 0 0;
+    border: none;
+    border-bottom: 1px solid var(--color-form-border);
+    background-color: transparent;
+}

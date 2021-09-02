@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="none">
+    <link href="TUI.css" rel="stylesheet">
+    <script src="TUI.js" defer></script>
+    <script src="https://kit.fontawesome.com/bacee63d78.js" defer></script>
+    <title>TUI фреймворк | Kroloburet</title>
+    <style>
+        body {
+            max-width: 1000px;
+            margin: 2em auto;
+        }
+
+        .headline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .demo_grid div[class^="TUI_col-"] {
+            padding: 15px 0;
+            background-color: var(--color-bg-gray);
+            text-align: center;
+        }
+
+        .bord {
+            border: 1px solid var(--color-bg-gray);
+            padding: 1em .5em;
+            margin-bottom: 1.5em;
+        }
+    </style>
+</head>
+<body>
+<div class="headline">
+    <h1>TUI фреймворк</h1>
+    <a href="https://github.com/kroloburet/TUI" class="TUI_btn-link" target="_blank">
+        <i class="fab fa-github"></i>&nbsp;Репозиторий
+    </a>
+</div>
+
+<!--
+########### О фреймворке
+-->
+
+<p>Это мини фреймворк с набором CSS3 классов и сценария на нативном javaScript для создания простых,
+    адаптивных веб-интерфейсов. Он подойдет для тех, кто не хочет <q>тащить</q> в проект монстров
+    типа Bootstrap с их зависимостями. Если ты любишь адаптивную, выразительную верстку без верениц
+    классов и работающие <q>из коробки</q> веб-компоненты типа табов или многоуровневого меню без
+    поиска и подключения дополнительных плагинов, TUI станет приемлемой отправной точкой. Расширяй
+    TUI если хочешь больше возможностей.</p>
+
+<!--
+########### Подключение TUI
+-->
+
+<h2 id="GetStart">Подключение TUI</h2>
+<ol>
+    <li><a href="https://github.com/kroloburet/TUI/archive/refs/heads/main.zip" target="_blank">Загрузи архив</a>
+        с TUI и распакуй его или клонируй: <code>https://github.com/kroloburet/TUI.git</code>
+    </li>
+    <li>
+        Подключи в документ <code>TUI.css</code>, <code>TUI.js</code>, <code>fontawesome</code> как в примере ниже.
+        <pre>
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+   &lt;meta charset=&quot;UTF-8&quot;&gt;
+   &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+   &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;
+   &lt;!-- TUI CSS --&gt;
+   &lt;link href=&quot;TUI.css&quot; rel=&quot;stylesheet&quot;&gt;
+   &lt;!-- TUI js --&gt;
+   &lt;script src=&quot;TUI.js&quot; defer&gt;&lt;/script&gt;
+   &lt;!-- FontAwesome --&gt;
+   &lt;script src=&quot;https://kit.fontawesome.com/yourKey.js&quot; defer&gt;&lt;/script&gt;
+   &lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+   &lt;button type=&quot;button&quot; onclick=&quot;TUI.Popup('myPop')&quot;&gt;Click My&lt;/button&gt;
+   &lt;div id=&quot;myPop&quot; class=&quot;TUI_Popup&quot;&gt;
+       &lt;h3&gt;Hello, World!&lt;/h3&gt;
+   &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </pre>
+    </li>
+</ol>
+
+<!--
+########### Начало работы с TUI
+-->
+
+<h2>Начало работы с TUI</h2>
+<p><a href="https://raw.githubusercontent.com/kroloburet/TUI/main/TUI.css" target="_blank">TUI.css</a>
+    содержит классы для стилистического оформления и облегчения адаптивной
+    верстки веб-интерфейса (открой эту страницу в мобильном/планшете или измени ширину окна браузера, чтобы видеть как
+    TUI <q>адаптирует</q> содержимое). Обрати внимание, что в начале файла стилей TUI заданы переменные, которые
+    определяют в интерфейсе пользователя цветовую схему, шрифт и прочее. Ты можешь переопределить их значения чтобы,
+    например, легко изменить цветовую схему элементов форм. Для этого скопируй секцию <code>:root{...}</code>
+    с переменными которые ты хочешь переопределить, вставь в начало основного css-файла подключив его в документ после
+    <code>TUI.css</code> и задай свои значения переменным.</p>
+<p><a href="https://raw.githubusercontent.com/kroloburet/TUI/main/TUI.js" target="_blank">TUI.js</a>
+    содержит модуль сценариев для работы с веб-компонентами такими как
+    всплывающие окна, подсказки, табы и другими. Подробнее о компонентах написано ниже в этом руководстве.</p>
+
+<!--
+########### Сетка
+-->
+
+<h3>Адаптивная модульная сетка</h3>
+<p>Сетка может иметь неограниченное количество строк <code>TUI_row</code>, каждая из которых может содержать до
+    12-ти колонок <code>TUI_col</code>. 12 колонок = 100% от ширины родительского блока, 3 колонки = 25% и так
+    далее. При ширине устройства &gt;= 600px все колонки сетки трансформируются в строки.</p>
+<div class="demo_grid">
+    <div class="TUI_row">
+        <div class="TUI_col-1">.TUI_col-1</div>
+        <div class="TUI_col-11">.TUI_col-11</div>
+    </div>
+    <div class="TUI_row">
+        <div class="TUI_col-2">.TUI_col-2</div>
+        <div class="TUI_col-10">.TUI_col-10</div>
+    </div>
+    <div class="TUI_row">
+        <div class="TUI_col-3">.TUI_col-3</div>
+        <div class="TUI_col-9">.TUI_col-9</div>
+    </div>
+    <div class="TUI_row">
+        <div class="TUI_col-4">.TUI_col-4</div>
+        <div class="TUI_col-8">.TUI_col-8</div>
+    </div>
+    <div class="TUI_row">
+        <div class="TUI_col-5">.TUI_col-5</div>
+        <div class="TUI_col-7">.TUI_col-7</div>
+    </div>
+    <div class="TUI_row">
+        <div class="TUI_col-6">.TUI_col-6</div>
+        <div class="TUI_col-6">.TUI_col-6</div>
+    </div>
+    <div class="TUI_row">
+        <div class="TUI_col-12">.TUI_col-12</div>
+    </div>
+</div>
+<dl class="TUI_Tab">
+    <dt>Пример кода сетки</dt>
+    <dd>
+        <pre>
+&lt;div class=&quot;TUI_row&quot;&gt;
+    &lt;div class=&quot;TUI_col-6&quot;&gt;
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+        industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+        scrambled it to make a type specimen book.
+    &lt;/div&gt;
+    &lt;div class=&quot;TUI_col-6&quot;&gt;
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+        industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+        scrambled it to make a type specimen book.
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;TUI_row&quot;&gt;
+    &lt;div class=&quot;TUI_col-12&quot;&gt;
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+        industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+        scrambled it to make a type specimen book.
+    &lt;/div&gt;
+&lt;/div&gt;
+        </pre>
+    </dd>
+    <dt>Результат</dt>
+    <dd>
+        <div class="TUI_row">
+            <div class="TUI_col-6">
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+                industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+                scrambled it to make a type specimen book.
+            </div>
+            <div class="TUI_col-6">
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+                industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+                scrambled it to make a type specimen book.
+            </div>
+        </div>
+        <div class="TUI_row">
+            <div class="TUI_col-12">
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+                industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+                scrambled it to make a type specimen book.
+            </div>
+        </div>
+    </dd>
+</dl>
+
+<!--
+########### Полезные классы
+-->
+
+<h3>Другие полезные классы</h3>
+<p>Если хочешь скрыть некоторые элементы страницы при выводе ее на печать &mdash; присвой таким элементам
+    <code>class="TUI_noprint"</code>.</p>
+<p>Чтобы пользователь видел, что ссылка ведет на другой ресурс или откроется в новом окне или вкладке, в TUI
+    предусмотрены классы <code>TUI_world</code> и <code>TUI_blank</code>. Пример:
+    <a href="#" class="TUI_world">class="TUI_world"</a>, <a href="#" target="_blank">class="TUI_blank" или
+        target="_blank"</a>
+</p>
+<p class="TUI_warn">Присвой <code>class="TUI_warn"</code> для элемента с текстом, чтобы он стал таким как этот. Это
+    подойдет, к примеру, для аннотации к статье или другой важной информации, которая должна быть ненавязчиво подана
+    читателю.</p>
+<p>
+    <span class="TUI_red">У этого текста <code>class="TUI_red"</code> поэтому он такой.</span>
+    <span class="TUI_yellow">У этого текста <code>class="TUI_yellow"</code> поэтому он такой.</span>
+    <span class="TUI_green">У этого текста <code>class="TUI_green"</code> поэтому он такой.</span>
+    <span class="TUI_blue">У этого текста <code>class="TUI_blue"</code> поэтому он такой.</span>
+    <span class="TUI_gray">У этого текста <code>class="TUI_gray"</code> поэтому он такой.</span>
+</p>
+<p class="TUI_align-l bord">У этого блока <code>class="TUI_align-l"</code> поэтому текст и другие блоки в нем будут
+    выровнены по левой стороне</p>
+<p class="TUI_align-r bord">У этого блока <code>class="TUI_align-r"</code> поэтому текст и другие блоки в нем будут
+    выровнены по правой стороне</p>
+<p class="TUI_align-c bord">У этого блока <code>class="TUI_align-c"</code> поэтому текст и другие блоки в нем будут
+    выровнены по центру</p>
+<span class="TUI_full bord">Принудительно установи ширину 100% для элемента используя <code>class="TUI_full"</code></span>
+
+<!--
+########### Уведомления
+-->
+
+<dl class="TUI_Tab" id="noticeClasses">
+    <dt>Уведомления</dt>
+    <dd>
+        <p class="TUI_notice-error">class="TUI_notice-error"</p>
+        <p class="TUI_notice-warning">class="TUI_notice-warning"</p>
+        <p class="TUI_notice-success">class="TUI_notice-success"</p>
+        <p class="TUI_notice-info">class="TUI_notice-info"</p>
+        <p class="TUI_notice-process">class="TUI_notice-process"</p>
+        <p class="TUI_notice-error mini">class="TUI_notice-error mini"</p>
+        <p class="TUI_notice-warning mini">class="TUI_notice-warning mini"</p>
+        <p class="TUI_notice-success mini">class="TUI_notice-success mini"</p>
+        <p class="TUI_notice-info mini">class="TUI_notice-info mini"</p>
+        <p class="TUI_notice-process mini">class="TUI_notice-process mini"</p>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;p class=&quot;TUI_notice-error&quot;&gt;class=&quot;TUI_notice-error&quot;&lt;/p&gt;
+&lt;p class=&quot;TUI_notice-warning&quot;&gt;class=&quot;TUI_notice-warning&quot;&lt;/p&gt;
+&lt;p class=&quot;TUI_notice-success&quot;&gt;class=&quot;TUI_notice-success&quot;&lt;/p&gt;
+&lt;p class=&quot;TUI_notice-info&quot;&gt;class=&quot;TUI_notice-info&quot;&lt;/p&gt;
+&lt;p class=&quot;TUI_notice-process&quot;&gt;class=&quot;TUI_notice-process&quot;&lt;/p&gt;
+&lt;p class=&quot;TUI_notice-error mini&quot;&gt;class=&quot;TUI_notice-error mini&quot;&lt;/p&gt;
+&lt;p class=&quot;TUI_notice-warning mini&quot;&gt;class=&quot;TUI_notice-warning mini&quot;&lt;/p&gt;
+&lt;p class=&quot;TUI_notice-success mini&quot;&gt;class=&quot;TUI_notice-success mini&quot;&lt;/p&gt;
+&lt;p class=&quot;TUI_notice-info mini&quot;&gt;class=&quot;TUI_notice-info mini&quot;&lt;/p&gt;
+&lt;p class=&quot;TUI_notice-process mini&quot;&gt;class=&quot;TUI_notice-process mini&quot;&lt;/p&gt;
+        </pre>
+    </dd>
+</dl>
+
+<!--
+########### Таблицы
+-->
+
+<dl class="TUI_Tab">
+    <dt>Таблицы</dt>
+    <dd>
+        <p>Таблицы могут быть большими и сложными, а данные в них довольно объемными. Задай
+            <code>class="TUI_table"</code> для таблицы, чтобы при малой ширине устройства ее структура оставалась
+            целостной, а просматривать ее можно было используя горизонтальную прокрутку. &mdash; Это наиболее
+            оптимальное решение для таблиц в данный момент.</p>
+        <table class="TUI_table">
+            <thead>
+            <tr>
+                <th>Планета</th>
+                <th>Диаметр</th>
+                <th>Наклон оси</th>
+                <th>Спутники</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <td colspan="4">Вывод: Мы &mdash; космическая пыль..)</td>
+            </tr>
+            </tfoot>
+            <tbody>
+            <tr>
+                <td>Меркурий</td>
+                <td>4879,4</td>
+                <td>~0,01</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>Венера</td>
+                <td>12104</td>
+                <td>177,36</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>Земля</td>
+                <td>12742</td>
+                <td>23,439281</td>
+                <td>1</td>
+            </tr>
+            </tbody>
+        </table>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;table class=&quot;TUI_table&quot;&gt;
+    &lt;thead&gt;
+    &lt;tr&gt;
+        &lt;th&gt;Планета&lt;/th&gt;
+        &lt;th&gt;Диаметр&lt;/th&gt;
+        &lt;th&gt;Наклон оси&lt;/th&gt;
+        &lt;th&gt;Спутники&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tfoot&gt;
+    &lt;tr&gt;
+        &lt;td colspan=&quot;4&quot;&gt;Вывод: Мы &amp;mdash; космическая пыль..)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/tfoot&gt;
+    &lt;tbody&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Меркурий&lt;/td&gt;
+        &lt;td&gt;4879,4&lt;/td&gt;
+        &lt;td&gt;~0,01&lt;/td&gt;
+        &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Венера&lt;/td&gt;
+        &lt;td&gt;12104&lt;/td&gt;
+        &lt;td&gt;177,36&lt;/td&gt;
+        &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Земля&lt;/td&gt;
+        &lt;td&gt;12742&lt;/td&gt;
+        &lt;td&gt;23,439281&lt;/td&gt;
+        &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+        </pre>
+    </dd>
+</dl>
+
+<!--
+########### Формы
+-->
+
+<dl class="TUI_Tab">
+    <dt>Формы</dt>
+    <dd>
+        <h3>Элементы формы по умолчанию</h3>
+        <p>В TUI предусмотрена стилизация элементов формы. Следуй простым правилам разметки для форм TUI.
+            Кроме кнопок, все элементы формы должны быть <q>обернуты</q> в теги <code>label</code> с классом TUI,
+            а надписи для элементов могут располагаться снаружи или внутри <code>label</code>. По умолчанию, элементы
+            ведут себя как блочные и занимают всю доступную ширину.</p>
+        <!-- text input -->
+        Default input type="text"
+        <label class="TUI_input">
+            <input type="text">
+        </label>
+        <!-- disabled input -->
+        Default input disabled
+        <label class="TUI_input">
+            <input type="text" disabled>
+        </label>
+        <!-- TUI_invalid input -->
+        Default input class="TUI_invalid"
+        <label class="TUI_input">
+            <input type="text" class="TUI_invalid">
+        </label>
+        <!-- search input -->
+        Default input type="search" with button
+        <label class="TUI_search">
+            <input type="search">
+            <button>Поиск</button>
+        </label>
+        <!-- select -->
+        Default select
+        <label class="TUI_select">
+            <select>
+                <option>Option1</option>
+                <option>Option2</option>
+                <option>Option3</option>
+            </select>
+        </label>
+        <!-- textarea -->
+        Default textarea
+        <label class="TUI_textarea">
+            <textarea></textarea>
+        </label>
+        <!-- number input -->
+        Default input type="number"
+        <label class="TUI_number">
+            <input type="number" min="-10" max="10" value="0">
+        </label>
+        <!-- file input -->
+        Default input type="file" multiple
+        <label class="TUI_file">
+            <input type="file" multiple>
+        </label>
+        <!-- range input -->
+        Default input type="range"
+        <label class="TUI_range">
+            <input type="range" min="0" max="10" step="1" value="0">
+        </label>
+        <div class="TUI_row">
+            <div class="TUI_col-6">
+                <!-- checkbox -->
+                Default checkbox
+                <label class="TUI_checkbox">
+                    <input type="checkbox" disabled checked>
+                    <span class="custom-checkbox"></span> Disabled checked
+                </label>
+                <label class="TUI_checkbox">
+                    <input type="checkbox" checked>
+                    <span class="custom-checkbox"></span> Option one
+                </label>
+                <label class="TUI_checkbox">
+                    <input type="checkbox">
+                    <span class="custom-checkbox"></span> Option two
+                </label>
+            </div>
+            <div class="TUI_col-6">
+                <!-- radio -->
+                Default radio
+                <label class="TUI_radio">
+                    <input type="radio" disabled checked>
+                    <span class="custom-radio"></span> Disabled checked
+                </label>
+                <label class="TUI_radio">
+                    <input type="radio" checked>
+                    <span class="custom-radio"></span> Option one
+                </label>
+                <label class="TUI_radio">
+                    <input type="radio">
+                    <span class="custom-radio"></span> Option two
+                </label>
+            </div>
+        </div>
+        <!-- buttons -->
+        <button type="button">button</button>
+        <input type="button" value="&lt;input type=&quot;button&quot;&gt;">
+        <a href="#" class="TUI_btn-link">&lt;a class="TUI_btn-link"&gt;&lt;/a&gt;</a>
+        <input type="submit" value="disabled button" disabled>
+
+        <h3><q>Inline</q> элементы формы</h3>
+        <p>Чтобы элемент формы вел себя как строчный, добавь класс <code>inline</code> его родительскому
+            <code>label</code>. Следует заметить, что в таком случае имеет значение, где будет расположена надпись
+            элемента.</p>
+        <!-- inline input -->
+        <h4>Надписи полей внутри &lt;label&gt;</h4>
+        <label class="TUI_input inline">
+            Name
+            <input type="text">
+        </label>
+        <label class="TUI_input inline">
+            Email
+            <input type="email">
+        </label>
+        <h4>Надписи полей снаружи &lt;label&gt;</h4>
+        Name
+        <label class="TUI_input inline">
+            <input type="text">
+        </label>
+        Email
+        <label class="TUI_input inline">
+            <input type="email">
+        </label>
+        <h4>Элементы без надписей</h4>
+        <!-- inline range input -->
+        <label class="TUI_range inline">
+            <input type="range" min="0" max="10" step="1" value="0">
+        </label>
+        <!-- inline file input -->
+        <label class="TUI_file inline">
+            <input type="file" multiple>
+        </label>
+        <!-- inline number input -->
+        <label class="TUI_number inline">
+            <input type="number" min="-10" max="10" value="0">
+        </label>
+        <!-- inline select -->
+        <label class="TUI_select inline">
+            <select>
+                <option selected>Default select</option>
+                <option>Option1</option>
+                <option>Option2</option>
+                <option>Option3</option>
+            </select>
+        </label>
+        <!-- default button -->
+        <button type="button">Default button</button>
+        <h4>Чекбоксы и радио</h4>
+        <!-- inline checkbox -->
+        <label class="TUI_checkbox inline">
+            <input type="checkbox" checked>
+            <span class="custom-checkbox"></span> Option inline one
+        </label>
+        <label class="TUI_checkbox inline">
+            <input type="checkbox">
+            <span class="custom-checkbox"></span> Option inline two
+        </label>
+        <!-- inline radio -->
+        <label class="TUI_radio inline">
+            <input type="radio" checked>
+            <span class="custom-radio"></span> Option inline one
+        </label>
+        <label class="TUI_radio inline">
+            <input type="radio">
+            <span class="custom-radio"></span> Option inline two
+        </label>
+
+        <h3>Группировка элементов</h3>
+        <p>Для группировки элементов формы в HTML предусмотрен тег <code>fieldset</code>, можешь использовать его.
+            Но иногда нужно расположить несколько элементов в одну строку так, чтобы они эффективно использовали всю
+            доступную ширину и при этом были адаптивны. Просто возьми
+            <code>&lt;div class=&quot;TUI_fieldset&quot;&gt;</code> и помести в него все, что нужно. Кстати,
+            <code>TUI_fieldset</code> удобно использовать для мини форм если добавить этот класс прямо к тегу
+            <code>form</code>. Надпись для группы следует размещать за ее пределами.</p>
+        Fieldset group
+        <div class="TUI_fieldset">
+            <label class="TUI_select">
+                <select>
+                    <option>Option1</option>
+                    <option>Option2</option>
+                    <option>Option3</option>
+                </select>
+            </label>
+            <label class="TUI_input">
+                <input type="text" placeholder="Example text">
+            </label>
+            <button type="button">Add</button>
+            <i class="fas fa-trash-alt fa-2x TUI_blue"></i>
+        </div>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;!-------------------------- Default view --&gt;
+
+&lt;!-- text input --&gt;
+Default input type=&quot;text&quot;
+&lt;label class=&quot;TUI_input&quot;&gt;
+    &lt;input type=&quot;text&quot;&gt;
+&lt;/label&gt;
+
+&lt;!-- disabled input --&gt;
+Default input disabled
+&lt;label class=&quot;TUI_input&quot;&gt;
+    &lt;input type=&quot;text&quot; disabled&gt;
+&lt;/label&gt;
+
+&lt;!-- TUI_invalid input --&gt;
+Default input class=&quot;TUI_invalid&quot;
+&lt;label class=&quot;TUI_input&quot;&gt;
+    &lt;input type=&quot;text&quot; class=&quot;TUI_invalid&quot;&gt;
+&lt;/label&gt;
+
+&lt;!-- search input --&gt;
+Default input type=&quot;search&quot; with button
+&lt;label class=&quot;TUI_search&quot;&gt;
+    &lt;input type=&quot;search&quot;&gt;
+    &lt;button&gt;Поиск&lt;/button&gt;
+&lt;/label&gt;
+
+&lt;!-- select --&gt;
+Default select
+&lt;label class=&quot;TUI_select&quot;&gt;
+    &lt;select&gt;
+        &lt;option&gt;Option1&lt;/option&gt;
+        &lt;option&gt;Option2&lt;/option&gt;
+        &lt;option&gt;Option3&lt;/option&gt;
+    &lt;/select&gt;
+&lt;/label&gt;
+
+&lt;!-- textarea --&gt;
+Default textarea
+&lt;label class=&quot;TUI_textarea&quot;&gt;
+    &lt;textarea&gt;&lt;/textarea&gt;
+&lt;/label&gt;
+
+&lt;!-- number input --&gt;
+Default input type=&quot;number&quot;
+&lt;label class=&quot;TUI_number&quot;&gt;
+    &lt;input type=&quot;number&quot; min=&quot;-10&quot; max=&quot;10&quot; value=&quot;0&quot;&gt;
+&lt;/label&gt;
+
+&lt;!-- file input --&gt;
+Default input type=&quot;file&quot; multiple
+&lt;label class=&quot;TUI_file&quot;&gt;
+    &lt;input type=&quot;file&quot; multiple&gt;
+&lt;/label&gt;
+
+&lt;!-- range input --&gt;
+Default input type=&quot;range&quot;
+&lt;label class=&quot;TUI_range&quot;&gt;
+    &lt;input type=&quot;range&quot; min=&quot;0&quot; max=&quot;10&quot; step=&quot;1&quot; value=&quot;0&quot;&gt;
+&lt;/label&gt;
+
+&lt;div class=&quot;TUI_row&quot;&gt;
+    &lt;div class=&quot;TUI_col-6&quot;&gt;
+
+        &lt;!-- checkbox --&gt;
+        Default checkbox
+        &lt;label class=&quot;TUI_checkbox&quot;&gt;
+            &lt;input type=&quot;checkbox&quot; disabled checked&gt;
+            &lt;span class=&quot;custom-checkbox&quot;&gt;&lt;/span&gt; Disabled checked
+        &lt;/label&gt;
+        &lt;label class=&quot;TUI_checkbox&quot;&gt;
+            &lt;input type=&quot;checkbox&quot; checked&gt;
+            &lt;span class=&quot;custom-checkbox&quot;&gt;&lt;/span&gt; Option one
+        &lt;/label&gt;
+        &lt;label class=&quot;TUI_checkbox&quot;&gt;
+            &lt;input type=&quot;checkbox&quot;&gt;
+            &lt;span class=&quot;custom-checkbox&quot;&gt;&lt;/span&gt; Option two
+        &lt;/label&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;TUI_col-6&quot;&gt;
+
+        &lt;!-- radio --&gt;
+        Default radio
+        &lt;label class=&quot;TUI_radio&quot;&gt;
+            &lt;input type=&quot;radio&quot; disabled checked&gt;
+            &lt;span class=&quot;custom-radio&quot;&gt;&lt;/span&gt; Disabled checked
+        &lt;/label&gt;
+        &lt;label class=&quot;TUI_radio&quot;&gt;
+            &lt;input type=&quot;radio&quot; checked&gt;
+            &lt;span class=&quot;custom-radio&quot;&gt;&lt;/span&gt; Option one
+        &lt;/label&gt;
+        &lt;label class=&quot;TUI_radio&quot;&gt;
+            &lt;input type=&quot;radio&quot;&gt;
+            &lt;span class=&quot;custom-radio&quot;&gt;&lt;/span&gt; Option two
+        &lt;/label&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- buttons --&gt;
+&lt;button type=&quot;button&quot;&gt;button&lt;/button&gt;
+&lt;input type=&quot;button&quot; value=&quot;input button&quot;&gt;
+&lt;a href=&quot;#&quot; class=&quot;TUI_btn-link&quot;&gt;link button&lt;/a&gt;
+&lt;input type=&quot;submit&quot; value=&quot;disabled button&quot; disabled&gt;
+
+&lt;!-------------------------- Inline view --&gt;
+
+&lt;!-- inline input --&gt;
+&lt;!-- Надписи полей внутри &lt;label&gt; --&gt;
+&lt;label class=&quot;TUI_input inline&quot;&gt;
+    Name
+    &lt;input type=&quot;text&quot;&gt;
+&lt;/label&gt;
+&lt;label class=&quot;TUI_input inline&quot;&gt;
+    Email
+    &lt;input type=&quot;email&quot;&gt;
+&lt;/label&gt;
+
+&lt;!-- Надписи полей снаружи &lt;label&gt; --&gt;
+Name
+&lt;label class=&quot;TUI_input inline&quot;&gt;
+    &lt;input type=&quot;text&quot;&gt;
+&lt;/label&gt;
+Email
+&lt;label class=&quot;TUI_input inline&quot;&gt;
+    &lt;input type=&quot;email&quot;&gt;
+&lt;/label&gt;
+
+&lt;!-- Элементы без надписей --&gt;
+&lt;!-- inline range input --&gt;
+&lt;label class=&quot;TUI_range inline&quot;&gt;
+    &lt;input type=&quot;range&quot; min=&quot;0&quot; max=&quot;10&quot; step=&quot;1&quot; value=&quot;0&quot;&gt;
+&lt;/label&gt;
+
+&lt;!-- inline file input --&gt;
+&lt;label class=&quot;TUI_file inline&quot;&gt;
+    &lt;input type=&quot;file&quot; multiple&gt;
+&lt;/label&gt;
+
+&lt;!-- inline number input --&gt;
+&lt;label class=&quot;TUI_number inline&quot;&gt;
+    &lt;input type=&quot;number&quot; min=&quot;-10&quot; max=&quot;10&quot; value=&quot;0&quot;&gt;
+&lt;/label&gt;
+
+&lt;!-- inline select --&gt;
+&lt;label class=&quot;TUI_select inline&quot;&gt;
+    &lt;select&gt;
+        &lt;option selected&gt;Default select&lt;/option&gt;
+        &lt;option&gt;Option1&lt;/option&gt;
+        &lt;option&gt;Option2&lt;/option&gt;
+        &lt;option&gt;Option3&lt;/option&gt;
+    &lt;/select&gt;
+&lt;/label&gt;
+
+&lt;!-- default button --&gt;
+&lt;button type=&quot;button&quot;&gt;Default button&lt;/button&gt;
+
+&lt;!-- Чекбоксы и радио --&gt;
+&lt;!-- inline checkbox --&gt;
+&lt;label class=&quot;TUI_checkbox inline&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; checked&gt;
+    &lt;span class=&quot;custom-checkbox&quot;&gt;&lt;/span&gt; Option inline one
+&lt;/label&gt;
+&lt;label class=&quot;TUI_checkbox inline&quot;&gt;
+    &lt;input type=&quot;checkbox&quot;&gt;
+    &lt;span class=&quot;custom-checkbox&quot;&gt;&lt;/span&gt; Option inline two
+&lt;/label&gt;
+
+&lt;!-- inline radio --&gt;
+&lt;label class=&quot;TUI_radio inline&quot;&gt;
+    &lt;input type=&quot;radio&quot; checked&gt;
+    &lt;span class=&quot;custom-radio&quot;&gt;&lt;/span&gt; Option inline one
+&lt;/label&gt;
+&lt;label class=&quot;TUI_radio inline&quot;&gt;
+    &lt;input type=&quot;radio&quot;&gt;
+    &lt;span class=&quot;custom-radio&quot;&gt;&lt;/span&gt; Option inline two
+&lt;/label&gt;
+
+&lt;!-------------------------- Fieldset group view --&gt;
+
+Fieldset group
+&lt;div class=&quot;TUI_fieldset&quot;&gt;
+    &lt;label class=&quot;TUI_select&quot;&gt;
+        &lt;select&gt;
+            &lt;option&gt;Option1&lt;/option&gt;
+            &lt;option&gt;Option2&lt;/option&gt;
+            &lt;option&gt;Option3&lt;/option&gt;
+        &lt;/select&gt;
+    &lt;/label&gt;
+    &lt;label class=&quot;TUI_input&quot;&gt;
+        &lt;input type=&quot;text&quot; placeholder=&quot;Example text&quot;&gt;
+    &lt;/label&gt;
+    &lt;button type=&quot;button&quot;&gt;Add&lt;/button&gt;
+    &lt;i class=&quot;fas fa-trash-alt fa-2x TUI_blue&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+        </pre>
+    </dd>
+</dl>
+
+<!--
+########### Хелперы
+-->
+
+<h2>Хелперы</h2>
+<p>Элементы страницы, которые должны динамически меняться в зависимости от действий пользователя, в TUI обрабатываются
+    сценариями javascript из файла
+    <a href="https://raw.githubusercontent.com/kroloburet/TUI/main/TUI.js" target="_blank">TUI.js</a>. Эти сценарии
+    (методы TUI) условно отнесены к хелперам. Изменение элемента хелпера <q>привязано</q> к событию на элементе
+    <q>триггере</q>. Ниже приведены хелперы TUI.</p>
+
+<!--
+########### Переключение отображения элемента
+-->
+
+<dl class="TUI_Tab">
+    <dt>Переключение отображения элемента</dt>
+    <dd>
+        <p>Полезный хелпер для показа/скрытия любых элементов с их содержимым.</p>
+        <button type="button" onclick="TUI.Toggle('hidElem')">Подробнее</button>
+        <div id="hidElem" hidden>
+            Обработчик кнопки запускает метод <code>TUI.Toggle('hidElem')</code> с переданным в нее id элемента который
+            должен переключаться, в данном случае &mdash; <code>&lt;div id="hidElem"&gt;</code>. Чтобы элемент был
+            скрыт по умолчанию добавь ему атрибут <code>hidden</code> или <code>style="display:none"</code>.<br>
+            <a onclick="TUI.Toggle('hidElem')">Скрыть подробности</a>
+        </div>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;button type=&quot;button&quot; onclick=&quot;TUI.Toggle(&#39;hidElem&#39;)&quot;&gt;Подробнее&lt;/button&gt;
+
+&lt;div id=&quot;hidElem&quot; hidden&gt;
+    &lt;p&gt;My hidden content. More... more content..)&lt;/p&gt;
+    &lt;a onclick=&quot;TUI.Toggle(&#39;hidElem&#39;)&quot;&gt;Скрыть подробности&lt;/a&gt;
+&lt;/div&gt;
+        </pre>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Метод <code>TUI.Toggle(id[, display])</code> переключает отображение элемента с <code>id</code>. Метод
+            возвращает элемент с <code>id</code></p>
+        Аргументы метода:
+        <ol>
+            <li><code>id</code> (строка, обязательный). ID элемента, который будет отображен или скрыт.</li>
+            <li><code>display</code> (строка, опционально, по умолчанию "block"). Значение CSS-свойства "display" для
+                отображаемого элемента. При скрытии элемент получает <code>display: none</code></li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Переход к элементу
+-->
+
+<dl class="TUI_Tab">
+    <dt>Переход к элементу</dt>
+    <dd>
+        <p>Этот простой хелпер плавно <q>прокручивает</q> страницу к заданному элементу. Конечно, это уже давно нативно
+            реализовано в HTML, но <q>прокрутить</q> страницу можно только с помощью ссылки
+            <code>href="#myElement"</code>. Бывает удобно использовать кнопку, любой другой элемент, а не только
+            ссылку, или вообще сделать это динамически.</p>
+        <button type="button" onclick="TUI.GoTo('#GetStart')">Перейти к заголовку <q>Подключение TUI</q></button>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;h2 id=&quot;h2Header&quot;&gt;Заголовок&lt;/h2&gt;
+
+&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae, consectetur,
+labore voluptates natus commodi nemo asperiores cumque magnam iste unde quaerat officia
+praesentium aspernatur qui laborum in accusantium quae facilis illo eos animi minus est
+sequi totam optio enim quos nihil corporis numquam rem quod neque error tempore.
+Aspernatur, facere, nihil, inventore repudiandae eum recusandae accusamus soluta nemo est
+libero expedita perferendis incidunt possimus ut esse cumque consequatur aliquid similique
+totam praesentium impedit fuga deserunt dolorum numquam rerum omnis dolore quibusdam
+assumenda quas qui hic fugiat labore repellendus quos voluptatibus autem dolorem...&lt;/p&gt;
+
+И еще много-много всякого...
+
+&lt;button type=&quot;button&quot; onclick=&quot;TUI.GoTo(&#39;#h2Header&#39;)&quot;&gt;Перейти к заголовку&lt;/button&gt;
+        </pre>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Метод <code>TUI.GoTo(selectorId)</code> используй чтобы плавно <q>прокрутить</q> страницу к желаемому
+            элементу. Например: чтобы
+            <a onclick="TUI.GoTo('#GetStart')">перейти к заголовку <q>Подключение TUI</q></a>
+            на этой странице, используется ссылка с <code>onclick="TUI.GoTo('#GetStart')"</code>, а сам заголовок
+            имеет <code>id="GetStart"</code>. Метод возвращает элемент с <code>id</code></p>
+        Аргументы метода:
+        <ol>
+            <li><code>selectorId</code> (строка, опционально, по умолчанию null). CSS-селектор ID элемента к которому
+                нужно <q>прокрутить</q> страницу. Если аргумент не передан, метод попытается найти в текущем URI якорь
+                (строка после <q>#</q> включительно) и выполнить выше описанный сценарий.
+            </li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Всплывающая подсказка
+-->
+
+<dl class="TUI_Tab">
+    <dt>Всплывающая подсказка</dt>
+    <dd>
+        Особенность этой
+        <mark onmouseover="TUI.Hint(this)">всплывающей подсказки</mark>&nbsp;
+        <pre class="TUI_Hint">
+            Привет, Мир!
+            Это пример всплывающей подсказки,
+            которая появляется потому, что на
+            элементе (триггере), над которым
+            сейчас расположен курсор,
+            есть событие с вызовом метода
+            onmouseover="TUI.Hint(this)"
+        </pre>
+        в том, что:
+        <ul>
+            <li>она может быть вызвана по любому стандартному событию на элементе (триггере)</li>
+            <li>триггером может быть любой элемент</li>
+            <li>скрытие подсказки допускается тоже любым стандартным событием</li>
+            <li>подсказка может содержать HTML</li>
+            <li>содержимое подсказки будет индексироваться поисковым роботом</li>
+            <li>простой и аккуратный код</li>
+        </ul>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;ol&gt;
+    &lt;li&gt;
+        Подсказка по умолчанию. Триггер &lt;mark onmouseover=&quot;TUI.Hint(this)&quot;&gt;здесь&lt;/mark&gt;
+        &lt;pre class=&quot;TUI_Hint&quot;&gt;
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            Dolores, aliquid consequuntur harum, quia voluptatem
+        &lt;/pre&gt;
+    &lt;/li&gt;
+
+    &lt;li&gt;
+        Чтобы скрыть &lt;mark onmouseover=&quot;TUI.Hint(this,'click')&quot;&gt;эту подсказку&lt;/mark&gt;
+        &lt;pre class=&quot;TUI_Hint&quot;&gt;
+            Чтобы скрыть эту подсказку кликни
+            в любом месте. Это пригодится, например,
+            если в подсказке будет &lt;a href=&quot;#&quot;&gt;ссылка&lt;/a&gt;
+            или другой подобный элемент взаимодействия
+        &lt;/pre&gt;
+        нужно кликнуть
+    &lt;/li&gt;
+
+    &lt;li&gt;
+        &lt;mark onmouseover=&quot;TUI.Hint(this,'dblclick')&quot;&gt;Подсказка&lt;/mark&gt;
+        &lt;pre class=&quot;TUI_Hint&quot;&gt;
+            Ну, ты в курсе как ее скрыть.
+            Кликай дважды..)
+        &lt;/pre&gt;
+        в этом примере скрывается при двойном клике
+    &lt;/li&gt;
+
+    &lt;li&gt;
+        А в &lt;mark onmouseover=&quot;TUI.Hint(this)&quot;&gt;этой&lt;/mark&gt;
+        &lt;pre class=&quot;TUI_Hint&quot;&gt;
+            &lt;b&gt;Случайная картинка&lt;/b&gt;
+            &lt;img src=&quot;https://loremflickr.com/250/150&quot; alt=&quot;random&quot;&gt;
+        &lt;/pre&gt;
+        небольшой HTML-контент
+    &lt;/li&gt;
+
+    &lt;li&gt;
+        Если что-то нужно разъяснить &lt;i class=&quot;fas fa-question-circle TUI_blue&quot; onmouseover=&quot;TUI.Hint(this)&quot;&gt;&lt;/i&gt;
+        &lt;pre class=&quot;TUI_Hint&quot;&gt;
+            А что здесь разъяснять?
+            Все предельно просто, если посмотреть
+            в исходный код этих примеров в вкладке
+            &quot;Пример кода&quot;.
+        &lt;/pre&gt;
+    &lt;/li&gt;
+&lt;/ol&gt;
+        </pre>
+    </dd>
+    <dt>Результат</dt>
+    <dd>
+        <ol>
+            <li>
+                Подсказка по умолчанию. Триггер
+                <mark onmouseover="TUI.Hint(this)">здесь</mark>
+                <pre class="TUI_Hint">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                    Dolores, aliquid consequuntur harum, quia voluptatem.
+                </pre>
+            </li>
+            <li>
+                Чтобы скрыть
+                <mark onmouseover="TUI.Hint(this, 'click')">эту подсказку</mark>&nbsp;
+                <pre class="TUI_Hint">
+                    Чтобы скрыть эту подсказку кликни
+                    в любом месте. Это пригодится, например,
+                    если в подсказке будет <a href="#">ссылка</a>
+                    или другой подобный элемент взаимодействия.
+                </pre>
+                нужно кликнуть
+            </li>
+            <li>
+                <mark onmouseover="TUI.Hint(this, 'dblclick')">Подсказка</mark>&nbsp;
+                <pre class="TUI_Hint">
+                    Ну, ты в курсе как ее скрыть.
+                    Кликай дважды..)
+                </pre>
+                в этом примере скрывается при двойном клике
+            </li>
+            <li>
+                А в
+                <mark onmouseover="TUI.Hint(this)">этой</mark>&nbsp;
+                <pre class="TUI_Hint">
+                    <b>Случайная картинка</b>
+                    <img src="https://picsum.photos/200" alt="random">
+                </pre>
+                небольшой HTML-контент
+            </li>
+            <li>
+                Если что-то нужно разъяснить
+                <i class="fas fa-question-circle TUI_blue" onmouseover="TUI.Hint(this)"></i>
+                <pre class="TUI_Hint">
+                    А что здесь разъяснять?
+                    Все предельно просто, если посмотреть
+                    в исходный код этих примеров в вкладке
+                    "Пример кода".
+                </pre>
+            </li>
+        </ol>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Метод <code>TUI.Hint(trigger[, hideEvent])</code> запускается по событию, установленному на триггере и
+            показывает\скрывает подсказку, которая должна быть <q>обернута</q> в строчный элемент (span, pre). Элемент
+            с подсказкой должен быть расположен сразу после триггера. Этому элементу необходимо присвоить
+            <code>class="TUI_Hint"</code>. Метод возвращает элемент подсказки</p>
+        Аргументы метода:
+        <ol>
+            <li><code>trigger</code> (объект, обязательный). Указатель на триггер &mdash; "this". Или передай ссылку
+                на элемент триггера если используешь метод динамически.
+            </li>
+            <li><code>hideEvent</code> (строка, опционально, по умолчанию "mouseout") событие для скрытия подсказки. Это
+                событие следует передавать как строку без префикса <q>on</q>, например:
+                <code>TUI.Hint(this, 'click')</code>. В данном случае, после появления подсказки, она будет скрыта
+                только после клика по ней или любому другому элементу на странице. По умолчанию подсказка скроется
+                когда с триггера будет убран курсор.
+                <a href="https://en.wikipedia.org/wiki/HTML_attribute#Event_attributes" target="_blank">Список
+                    стандартных HTML событий</a></li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Лимит ввода
+-->
+
+<dl class="TUI_Tab">
+    <dt>Лимит ввода</dt>
+    <dd>
+        <p>Этот хелпер ограничивает количество символов при заполнении текстового поля и динамически показывает,
+            сколько еще можно вводить.</p>
+        Default input
+        <label class="TUI_input">
+            <input type="text" placeholder="начни вводить символы" oninput="TUI.Lim(this, 75)">
+        </label>
+        Default textarea
+        <label class="TUI_textarea">
+            <textarea placeholder="начни вводить символы" oninput="TUI.Lim(this, 75)"></textarea>
+        </label>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+Default input
+&lt;label class=&quot;input&quot;&gt;
+    &lt;input type=&quot;text&quot; placeholder=&quot;начни вводить символы&quot; oninput=&quot;TUI.Lim(this, 75)&quot;&gt;
+&lt;/label&gt;
+
+Default textarea
+&lt;label class=&quot;TUI_textarea&quot;&gt;
+    &lt;textarea placeholder=&quot;начни вводить символы&quot; oninput=&quot;TUI.Lim(this, 75)&quot;&gt;&lt;/textarea&gt;
+&lt;/label&gt;
+        </pre>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Метод <code>TUI.Lim(trigger[, limit])</code> ограничит ввод символов в поле <code>trigger</code> до
+            <code>limit</code> и покажет пользователю сколько еще можно ввести. Следует отметить, что метод
+            корректно обработает только текстовые поля <code>input</code> и <code>textarea</code> которые сверстаны по
+            правилам разметки TUI, как показано в разделе <q>Формы</q>. Метод возвращает элемент поля.</p>
+        Аргументы метода:
+        <ol>
+            <li><code>trigger</code> (объект, обязательный). Указатель на триггер &mdash; "this". Или передай ссылку
+                на элемент триггера если используешь метод динамически.
+            </li>
+            <li><code>limit</code> (целое число, опционально, по умолчанию 50). Лимит символов.</li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Плагины
+-->
+
+<h2>Плагины</h2>
+<p>Один или несколько элементов страницы, которые должны динамически трансформироваться чтобы в результате работать как
+    отдельные единицы интерфейса (компоненты). Эти трансформации, и в последующем, логика работы таких единиц описаны в
+    файле <a href="https://raw.githubusercontent.com/kroloburet/TUI/main/TUI.js" target="_blank">TUI.js</a>
+    в методах TUI, условно отнесенных к плагинам. Плагины отличаются от хелперов возможностью более гибкого управления
+    и трансформации элементов. Ниже приведены плагины TUI.
+</p>
+
+<!--
+########### Уведомления
+-->
+
+<dl class="TUI_Tab">
+    <dt>Уведомления</dt>
+    <dd>
+        <p>Уведомить пользователя о статусе выполнения какого-либо процесса из твоего сценария можно с помощью
+            <code>TUI.Notice()</code>. Например, при отправке ajax запроса на сервер и получения ответа или в других
+            случаях, когда использование <code>alert(), confirm()</code> излишне или некрасиво. Плагин использует
+            <a onclick="TUI.GoTo('#noticeClasses')">классы уведомлений</a>, но может использовать и твои.</p>
+        <button type="button" id="goFeed">Покормить Барсика</button>
+        <script>
+            (() => {
+                let feedTheBarsik = () => {
+                    TUI.Notice({
+                        text: `омномном...`,
+                        delay: 3000,
+                        callback: () => {
+                            TUI.Notice({
+                                text: `Барсик покормлен..)`,
+                                delay: 2000,
+                                className: `TUI_notice-success`
+                            });
+                        }
+                    });
+                }
+                document.querySelector(`#goFeed`).addEventListener(`click`, feedTheBarsik);
+            })();
+        </script>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;button type=&quot;button&quot; id=&quot;goFeed&quot;&gt;Покормить Барсика&lt;/button&gt;
+
+&lt;script&gt;
+    let feedTheBarsik = () =&gt; {
+        TUI.Notice({
+            text: `омномном...`,
+            delay: 3000,
+            callback: () =&gt; {
+                TUI.Notice({
+                    text: `Барсик покормлен..)`,
+                    delay: 2000,
+                    className: `TUI_notice-success`
+                });
+            }
+        });
+    }
+    document.querySelector(`#goFeed`).addEventListener(`click`, feedTheBarsik);
+&lt;/script&gt;
+        </pre>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Метод <code>TUI.Notice()</code> создает и показывает уведомление. Если уведомление еще не создано
+            <code>TUI.Notice()</code> создаст его, иначе просто применит переданную конфигурацию. Чтобы показать
+            уведомление, вызови метод и передай в него объект конфигурации. Например:
+            <code>TUI.Notice({text: 'Успешно!', className: 'TUI_notice-success', delay: 2000})</code>.
+            Метод показывает и возвращает элемент уведомления.
+        </p>
+        <h3>Активация плагина</h3>
+        <code>TUI.Notice([userConf])</code> В данном случае, метод может принимать один необязательный аргумент &mdash;
+        литерал объекта с конфигурацией пользователя. Если конфигурация не передана, будет использована конфигурация
+        по умолчанию.
+        <ol>
+            <li><code>text</code> (строка, опционально, по умолчанию "обработка..."). Текст или HTML в уведомлении.</li>
+            <li><code>className</code> (строка, опционально, по умолчанию "TUI_notice-process"). Класс/ы уведомления
+                описанные в <a onclick="TUI.GoTo('#noticeClasses')">классах уведомлений</a>. Можно передавать
+                и свои классы.
+            </li>
+            <li><code>delay</code> (число или null, опционально, по умолчанию null). Задержка в миллисекундах для показа
+                уведомления перед деактивацией. Если передан 0 или null, уведомление будет активировано пока не
+                вызовешь команду <code>kill</code> или не передашь новую конфигурацию с <code>delay</code> больше
+                нуля.
+            </li>
+            <li><code>callback</code> (функция или null, опционально, по умолчанию null). Функция, которая будет вызвана
+                после деактивации уведомления. Обрати внимание, если <code>delay</code> 0 или null, функция не будет
+                выполнена, поскольку деактивация в такой конфигурации не предусмотрена.
+            </li>
+        </ol>
+        <h3>Деактивация плагина</h3>
+        <p><code>TUI.Notice("kill"[, id])</code>. В данном случае, метод должен принимать первым аргументом команду
+            <code>kill</code>, а вторым, необязательным, идентификатор уведомления. Поскольку идентификатор
+            присваивается плагином автоматически при активации и используется в служебных целях, будет достаточно
+            использовать только команду <code>kill</code>.</p>
+        <ol>
+            <li><code>kill</code> (строка, обязательный). Команда деактивации плагина</li>
+            <li><code>id</code> (строка, опционально).
+                Идентификатор активного уведомления который нужно деактивировать.
+            </li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Всплывающее окно
+-->
+
+<dl class="TUI_Tab">
+    <dt>Всплывающее окно</dt>
+    <dd>
+        <p>Любой элемент, которому присвоен <code>class="TUI_Popup"</code> и уникальный ID, TUI трансформирует в
+            всплывающее окно. Этот элемент может содержать все что угодно. Содержимое не будет скрыто от поисковых
+            роботов. Вызов всплывающего окна можно привязать к любому событию, на любом элементе (триггере).</p>
+        <button type="button" onclick="TUI.Popup('pop1')">Кнопка</button>
+        <a onclick="TUI.Popup('pop2')">Ссылка</a> и т.д.
+        <div id="pop1" class="TUI_Popup">
+            <h3>Привет!</h3>
+            Окно активировано кнопкой.
+        </div>
+        <div id="pop2" class="TUI_Popup">
+            Окно активировано ссылкой.
+        </div>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;button type=&quot;button&quot; onclick=&quot;TUI.Popup('pop1')&quot;&gt;Кнопка&lt;/button&gt;
+&lt;a onclick=&quot;TUI.Popup('pop2')&quot;&gt;Ссылка&lt;/a&gt;
+
+&lt;div id=&quot;pop1&quot; class=&quot;TUI_Popup&quot;&gt;
+    &lt;h3&gt;Привет!&lt;/h3&gt;
+    Окно активировано кнопкой.
+&lt;/div&gt;
+
+&lt;div id=&quot;pop2&quot; class=&quot;TUI_Popup&quot;&gt;
+    Окно активировано ссылкой.
+&lt;/div&gt;
+        </pre>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Метод <code>TUI.Popup()</code> создает и показывает всплывающие окна. Сначала метод трансформирует все
+            элементы которым присвоен <code>class="TUI_Popup"</code> в сплывающие окна, которые будут скрыты изначально.
+            Чтобы показать всплывающее окно, вызови метод с переданным ID элемента. Например:
+            <code>TUI.Popup("myPop")</code> покажет всплывающее окно с <code>id="myPop" class="TUI_Popup"</code>.
+            Вызов всплывающего окна может быть привязан к любому элементу (триггеру) или вызван динамически из сценария.
+            Метод возвращает элемент с переданным ID.
+        </p>
+        Аргументы метода:
+        <ol>
+            <li><code>id</code> (строка, обязательный). ID элемента который должен быть показан как всплывающее окно.
+            </li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Табы
+-->
+
+<dl class="TUI_Tab">
+    <dt>Табы</dt>
+    <dd>
+        <p>Интерфейс переключения между блоками с контентом с помощью вкладок (табов) можно наблюдать прямо здесь.
+            HTML-структура списка определений <code>dl</code> отлично подходит для этой задачи. По умолчанию, все
+            <code>&lt;dl class=&quot;TUI_Tab&quot;&gt;...&lt;/dl&gt;</code> TUI трансформирует в интерфейс табов.
+            При ширине устройства >= 600px табы трансформируются в <q>аккордеон</q>.</p>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;dl class="TUI_Tab"&gt;
+    &lt;dt&gt;Tab 1&lt;/dt&gt;
+    &lt;dd&gt;
+        &lt;h2&gt;Контент первого таба&lt;/h2&gt;
+        &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/p&gt;
+    &lt;/dd&gt;
+    &lt;dt&gt;Tab 2&lt;/dt&gt;
+    &lt;dd&gt;
+        &lt;h2&gt;Контент второго таба&lt;/h2&gt;
+        &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/p&gt;
+    &lt;/dd&gt;
+&lt;/dl&gt;
+        </pre>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Метод <code>TUI.Tab()</code> динамически трансформирует список определений <code>dl</code> в табы. TUI
+            по умолчанию трансформирует в табы все <code>dl</code> списки которым присвоен <code>class="TUI_Tab"</code>.
+            По умолчанию первая вкладка в табе будет активной. Если хочешь, чтобы по умолчанию была активна другая
+            вкладка, присвой <code>class="TUI_Tab-show"</code> желаемому <code>dt</code>.</p>
+        <h3>Активация плагина на элементе/тах</h3>
+        <p><code>TUI.Tab([userConf])</code> В данном случае, метод может принимать один необязательный аргумент &mdash;
+            литерал объекта с конфигурацией пользователя. Например: <code>TUI.Tab({selector: ".myElement"})</code>. Если
+            методу не передать аргумент, он сработает только на <code>&lt;dl class=&quot;TUI_Tab&quot;&gt;</code>. Метод
+            возвращает коллекцию обработанных элементов.</p>
+        <ol>
+            <li><code>selector</code> (строка, опционально, по умолчанию ".TUI_Tab"). CSS-селектор/ры элемента/тов
+                <code>dl</code> которые нужно трансформировать в табы.
+            </li>
+        </ol>
+        <h3>Деактивация плагина на элементе/тах</h3>
+        <p><code>TUI.Tab("kill"[, selector])</code> В данном случае, метод должен принимать первым аргументом команду
+            <code>kill</code>, а вторым, необязательным, CSS-селектор/ры элемента/тов <code>dl</code> на которых нужно
+            деактивировать плагин и трансформировать в первоначальный вид. Если методу передать только команду
+            <code>kill</code>, он сработает только на <code>&lt;dl class=&quot;TUI_Tab&quot;&gt;</code>.
+            Метод возвращает коллекцию обработанных элементов.</p>
+        <ol>
+            <li><code>kill</code> (строка, обязательный). Команда деактивации плагина</li>
+            <li><code>selector</code> (строка, опционально, по умолчанию ".TUI_Tab"). CSS-селектор/ры элемента/тов
+                <code>dl</code> на которых нужно деактивировать плагин.
+            </li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Input type="file" и type="range"
+-->
+
+<dl class="TUI_Tab">
+    <dt>Input type="file" и type="range"</dt>
+    <dd>
+        <p>К полю <code>&lt;input type=&quot;file&quot;&gt;</code> добавь <code>class="TUI_InputFile"</code>,
+            а к полю <code>&lt;input type=&quot;range&quot;&gt;</code> добавь <code>class="TUI_InputRange"</code>.
+            TUI добавит к этим полям информационные элементы и немного улучшит внешний вид.</p>
+        <h4>TUI_InputFile on input type="file". Default & inline</h4>
+        <label class="TUI_file">
+            <input class="TUI_InputFile" type="file" multiple>
+        </label>
+        <label class="TUI_file inline">
+            <input class="TUI_InputFile" type="file" multiple>
+        </label>
+        <h4>TUI_InputRange on input type="range". Default & inline</h4>
+        <label class="TUI_range">
+            <input class="TUI_InputRange" type="range" min="0" max="10" step="1" value="0">
+        </label>
+        <label class="TUI_range inline">
+            <input class="TUI_InputRange" type="range" min="0" max="10" step="1" value="0">
+        </label>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+TUI_InputFile on input type=&quot;file&quot;
+&lt;label class=&quot;TUI_file&quot;&gt;
+    &lt;input class=&quot;TUI_InputFile&quot; type=&quot;file&quot; multiple&gt;
+&lt;/label&gt;
+
+TUI_InputFile on inline input type=&quot;file&quot;
+&lt;label class=&quot;TUI_file inline&quot;&gt;
+    &lt;input class=&quot;TUI_InputFile&quot; type=&quot;file&quot; multiple&gt;
+&lt;/label&gt;
+
+TUI_InputRange on input type=&quot;range&quot;
+&lt;label class=&quot;TUI_range&quot;&gt;
+    &lt;input class=&quot;TUI_InputRange&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;10&quot; step=&quot;1&quot; value=&quot;0&quot;&gt;
+&lt;/label&gt;
+
+TUI_InputRange on inline input type=&quot;range&quot;
+&lt;label class=&quot;TUI_range inline&quot;&gt;
+    &lt;input class=&quot;TUI_InputRange&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;10&quot; step=&quot;1&quot; value=&quot;0&quot;&gt;
+&lt;/label&gt;
+        </pre>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Методы <code>TUI.InputFile()</code> и <code>TUI.InputRange()</code> динамически добавят информационный
+            элемент к соответствующим полям &mdash; <code>&lt;input type=&quot;file&quot;&gt;</code> и
+            <code>&lt;input type=&quot;range&quot;&gt;</code>, а также улучшат их внешний вид. Оба метода принимают
+            одинаковые параметры, но обрабатывают только соответствующие им типы полей (file или range).
+            Следует отметить, что плагины корректно обработают поля которые сверстаны по правилам разметки TUI, как
+            показано в разделе <q>Формы</q>.</p>
+        <h3>Активация плагинов на элементе/тах</h3>
+        <p><code>TUI.InputFile([userConf])</code> и <code>TUI.InputRange([userConf])</code>. В данном случае, методы
+            могут принимать один необязательный аргумент &mdash; литерал объекта с конфигурацией пользователя.
+            Например: <code>UI.InputFile({selector: ".myInput"})</code>. Если методу не передать аргумент, по умолчанию
+            он сработает только на <code>&lt;input type=&quot;file&quot; class=&quot;TUI_InputFile&quot;&gt;</code>.
+            Для <code>TUI.InputRange()</code> &mdash; это <code>&lt;input type=&quot;range&quot; class=&quot;TUI_InputRange&quot;&gt;</code>.
+            Методы возвращают коллекцию обработанных элементов.</p>
+        <ol>
+            <li><code>selector</code> (строка, опционально, по умолчанию ".TUI_InputFile" / ".TUI_InputRange").
+                CSS-селектор/ры элемента/тов соответствующих полей которые нужно трансформировать.
+            </li>
+            <li><code>icon</code> <span class="TUI_red">Только для <code>TUI.InputFile()</code></span>
+                (строка, опционально, по умолчанию "&lt;i class=&quot;fas fa-folder-open&quot;&gt;"). Текст или HTML
+                для информационного элемента если файл не выбран.
+            </li>
+        </ol>
+        <h3>Деактивация плагинов на элементе/тах</h3>
+        <p><code>TUI.InputFile("kill"[, selector])</code> и <code>TUI.InputRange("kill"[, selector])</code>.
+            В данном случае, метод должен принимать первым аргументом команду <code>kill</code>, а вторым,
+            необязательным, CSS-селектор/ры элемента/тов соответствующих полей, на которых нужно деактивировать плагин
+            и трансформировать в первоначальный вид. Если методу передать только команду <code>kill</code>, он сработает
+            только на <code>&lt;input type=&quot;file&quot; class=&quot;TUI_InputFile&quot;&gt;</code> и
+            <code>&lt;input type=&quot;range&quot; class=&quot;TUI_InputRange&quot;&gt;</code> соответственно.
+            Метод возвращает коллекцию обработанных элементов.</p>
+        <ol>
+            <li><code>kill</code> (строка, обязательный). Команда деактивации плагина</li>
+            <li><code>selector</code> (строка, опционально, по умолчанию ".TUI_InputFile" / ".TUI_InputRange").
+                CSS-селектор/ры элемента/тов соответствующих полей на которых нужно деактивировать плагин.
+            </li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Input type="number"
+-->
+
+<dl class="TUI_Tab">
+    <dt>Input type="number"</dt>
+    <dd>
+        <p>К полю <code>&lt;input type=&quot;number&quot;&gt;</code> добавь <code>class="TUI_InputNumber"</code>.
+            TUI добавит к этому полю кнопки изменения значения, проверку на нечисловые значения и немного
+            улучшит внешний вид. Обрати внимание, что надпись для поля следует размещать снаружи родительского <code>label</code>.
+        </p>
+        <h4>TUI_InputNumber on input type="number". Default & inline</h4>
+        <label class="TUI_number">
+            <input class="TUI_InputNumber" type="number" min="0" max="6">
+        </label>
+        <label class="TUI_number inline">
+            <input class="TUI_InputNumber" type="number" min="-6" max="6" step="2">
+        </label>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;label class=&quot;TUI_number&quot;&gt;
+    &lt;input class=&quot;TUI_InputNumber&quot; type=&quot;number&quot; min=&quot;0&quot; max=&quot;6&quot;&gt;
+&lt;/label&gt;
+
+&lt;label class=&quot;TUI_number inline&quot;&gt;
+    &lt;input class=&quot;TUI_InputNumber&quot; type=&quot;number&quot; min=&quot;-6&quot; max=&quot;6&quot; step=&quot;2&quot;&gt;
+&lt;/label&gt;
+        </pre>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Метод <code>TUI.InputNumber()</code> динамически добавит кнопки изменения значения к полям
+            <code>&lt;input type=&quot;number&quot;&gt;</code>, а также проверку на ввод нечисловых значений.
+            Этот плагин корректно обработает поля которые сверстаны по правилам разметки TUI, как
+            показано в разделе <q>Формы</q>.</p>
+        <h3>Активация плагина на элементе/тах</h3>
+        <p><code>TUI.InputNumber([userConf])</code> может принимать один необязательный аргумент &mdash; литерал объекта
+            с
+            конфигурацией пользователя. Например: <code>UI.InputNumber({selector: ".myInput"})</code>. Если методу не
+            передать аргумент, по умолчанию он сработает только на <code>&lt;input type=&quot;number&quot; class=&quot;TUI_InputNumber&quot;&gt;</code>.
+            Метод возвращает коллекцию обработанных элементов.</p>
+        <ol>
+            <li><code>selector</code> (строка, опционально, по умолчанию ".TUI_InputNumber").
+                CSS-селектор/ры элемента/тов полей которые нужно трансформировать.
+            </li>
+            <li><code>incIcon</code> (строка, опционально, по умолчанию "&plus;"). Текст или HTML для кнопки прибавления
+                к значению поля.
+            </li>
+            <li><code>decIcon</code> (строка, опционально, по умолчанию "&minus;"). Текст или HTML для кнопки убавления
+                от значения поля.
+            </li>
+            <li><code>info</code> (строка, опционально, по умолчанию "Поставьте курсор в поле и крутите колесико мыши
+                ;)").
+                Текст-подсказка для поля. Например, если нужно подсказать пользователю допустимый диапазон ввода.
+            </li>
+        </ol>
+        <h3>Деактивация плагина на элементе/тах</h3>
+        <p><code>TUI.InputNumber("kill"[, selector])</code>. В данном случае, метод должен принимать первым аргументом
+            команду <code>kill</code>, а вторым, необязательным, CSS-селектор/ры поля/лей, на которых нужно
+            деактивировать плагин и трансформировать в первоначальный вид. Если методу передать только команду
+            <code>kill</code>, он сработает только на <code>&lt;input type=&quot;number&quot; class=&quot;TUI_InputNumber&quot;&gt;</code>.
+            Метод возвращает коллекцию обработанных элементов.</p>
+        <ol>
+            <li><code>kill</code> (строка, обязательный). Команда деактивации плагина</li>
+            <li><code>selector</code> (строка, опционально, по умолчанию ".TUI_InputNumber"). CSS-селектор/ры
+                элемента/тов полей на которых нужно деактивировать плагин.
+            </li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Поиск по списку
+-->
+
+<dl class="TUI_Tab">
+    <dt>Поиск по списку</dt>
+    <dd>
+        <p>Просто добавь <code>class="TUI_SelectSearch"</code> к списку <code>&lt;select&gt;...&lt;/select&gt;</code>,
+            а TUI прикрепит к нему поле поиска и обеспечит его работу. Используй стандартные атрибуты "size",
+            "multiple" и другие, чтобы управлять списком как обычно.</p>
+        <label class="TUI_select">
+            <select class="TUI_SelectSearch" size="3">
+                <option>Aquaman</option>
+                <option>Asterix</option>
+                <option>Batman</option>
+                <option>Black Panther</option>
+                <option>Captain America</option>
+                <option>Captain Marvel</option>
+                <option>Doctor Strange</option>
+                <option>Guardians of the Galaxy</option>
+                <option>Hellboy</option>
+                <option>Robin</option>
+                <option>Superman</option>
+                <option>Teenage Mutant Ninja Turtles</option>
+                <option>Thor</option>
+            </select>
+        </label>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;label class=&quot;TUI_select&quot;&gt;
+    &lt;select class=&quot;TUI_SelectSearch&quot; size=&quot;3&quot;&gt;
+        &lt;option&gt;Aquaman&lt;/option&gt;
+        &lt;option&gt;Asterix&lt;/option&gt;
+        &lt;option&gt;Batman&lt;/option&gt;
+        &lt;option&gt;Black Panther&lt;/option&gt;
+        &lt;option&gt;Captain America&lt;/option&gt;
+        &lt;option&gt;Captain Marvel&lt;/option&gt;
+        &lt;option&gt;Doctor Strange&lt;/option&gt;
+        &lt;option&gt;Guardians of the Galaxy&lt;/option&gt;
+        &lt;option&gt;Hellboy&lt;/option&gt;
+        &lt;option&gt;Robin&lt;/option&gt;
+        &lt;option&gt;Superman&lt;/option&gt;
+        &lt;option&gt;Teenage Mutant Ninja Turtles&lt;/option&gt;
+        &lt;option&gt;Thor&lt;/option&gt;
+    &lt;/select&gt;
+&lt;/label&gt;
+        </pre>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Метод <code>TUI.SelectSearch()</code> динамически добавляет к списку <code>select</code> текстовое поле
+            и выполняет регистронезависимый поиск среди пунктов этого списка. TUI по умолчанию трансформирует все
+            списки <code>select</code> которым присвоен <code>class="TUI_SelectSearch"</code>. Следует отметить, что
+            плагин корректно обработает списки которые сверстаны по правилам разметки TUI, как показано в разделе
+            <q>Формы</q>.</p>
+        <h3>Активация плагина на элементе/тах</h3>
+        <p><code>TUI.SelectSearch([userConf])</code> В данном случае, метод может принимать один необязательный
+            аргумент &mdash; литерал объекта с конфигурацией пользователя. Например:
+            <code>TUI.SelectSearch({selector: ".myElement", placeholder: "Поиск"})</code>. Если методу не передать
+            аргумент, он сработает только на
+            <code>&lt;select class=&quot;TUI_SelectSearch&quot;&gt;...&lt;/select&gt;</code>. Метод возвращает коллекцию
+            обработанных элементов.</p>
+        <ol>
+            <li><code>selector</code> (строка, опционально, по умолчанию ".TUI_SelectSearch"). CSS-селектор/ры
+                списка/ков <code>select</code> которые нужно трансформировать.
+            </li>
+            <li><code>placeholder</code> (строка, опционально, по умолчанию "Поиск по списку"). Значение одноименного
+                атрибута для поля поиска.
+            </li>
+        </ol>
+        <h3>Деактивация плагина на элементе/тах</h3>
+        <p><code>TUI.SelectSearch("kill"[, selector])</code> В данном случае, метод должен принимать первым аргументом
+            команду <code>kill</code>, а вторым, необязательным, CSS-селектор/ры списка/ков <code>select</code> на
+            которых нужно деактивировать плагин и трансформировать в первоначальный вид. Если методу передать
+            только команду <code>kill</code>, он сработает только на
+            <code>&lt;select class=&quot;TUI_SelectSearch&quot;&gt;...&lt;/select&gt;</code>. Метод возвращает коллекцию
+            обработанных элементов.</p>
+        <ol>
+            <li><code>kill</code> (строка, обязательный). Команда деактивации плагина</li>
+            <li><code>selector</code> (строка, опционально, по умолчанию ".TUI_SelectSearch"). CSS-селектор/ры
+                списка/ков <code>select</code> на которых нужно деактивировать плагин.
+            </li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Меню
+-->
+
+<dl class="TUI_Tab">
+    <dt>Меню</dt>
+    <dd style="min-height:350px">
+        <p>Обычный маркированный список <code>&lt;ul class=&quot;TUI_Menu&quot;&gt;...&lt;/ul&gt;</code> TUI
+            трансформирует в адаптивное меню. Если пункт меню не должен быть ссылкой, его следует поместить в тег
+            <code>span</code>. Добавь <code>class="TUI_Menu-mark"</code> родительскому <code>li</code> пункта, чтобы
+            пометить его. А вообще, плагин сам пометит пункт первого уровня, если на любой глубине вложенности его
+            дочерних пунктов есть ссылка на текущую страницу.</p>
+        <ul class="TUI_Menu">
+            <li class="TUI_Menu-mark"><a href="#">item1</a>
+            </li>
+            <li><span>item2</span>
+                <ul>
+                    <li><a href="#">sub item1</a>
+                    </li>
+                    <li><a href="#">sub item2</a>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="#">item3</a>
+                <ul>
+                    <li><span>sub item1</span>
+                    </li>
+                    <li><a href="#">sub item2</a>
+                        <ul>
+                            <li><a href="#">sub item1</a>
+                            </li>
+                            <li><a href="#">sub item2</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><span>sub item3</span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </dd>
+    <dt>Пример кода</dt>
+    <dd>
+        <pre>
+&lt;ul class=&quot;TUI_Menu&quot;&gt;
+    &lt;li class=&quot;TUI_Menu-mark&quot;&gt;&lt;a href=&quot;#&quot;&gt;item1&lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;span&gt;item2&lt;/span&gt;
+        &lt;ul&gt;
+            &lt;li&gt;&lt;a href=&quot;#&quot;&gt;sub item1&lt;/a&gt;
+            &lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;#&quot;&gt;sub item2&lt;/a&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;item3&lt;/a&gt;
+        &lt;ul&gt;
+            &lt;li&gt;&lt;span&gt;sub item1&lt;/span&gt;
+            &lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;#&quot;&gt;sub item2&lt;/a&gt;
+                &lt;ul&gt;
+                    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;sub item1&lt;/a&gt;
+                    &lt;/li&gt;
+                    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;sub item2&lt;/a&gt;
+                    &lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+            &lt;li&gt;&lt;span&gt;sub item3&lt;/span&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+        </pre>
+    </dd>
+    <dt>API</dt>
+    <dd>
+        <p>Метод <code>TUI.Menu()</code> динамически трансформирует список <code>ul</code> в меню. TUI по умолчанию
+            трансформирует в меню все <code>ul</code> списки которым присвоен <code>class="TUI_Menu"</code>.
+            Плагин выделяет корневой пункт если среди его вложенных пунктов есть ссылка на текущую страницу.
+            Если URI текущей страницы совпадает со значением <code>href</code> ссылки на любом уровне вложенности,
+            плагин найдет родительский <code>li</code> самого верхнего уровня и добавит ему
+            <code>class="TUI_Menu-mark"</code>. Ты тоже можешь использовать этот класс, чтобы выделить какой-либо
+            <code>li</code> в структуре. Для мобильной версии, плагин добавит кнопку отображения/скрытия меню
+            и кнопки отображения/скрытия вложенных подуровней меню.</p>
+        <h3>Активация плагина на элементе/тах</h3>
+        <p><code>TUI.Menu([userConf])</code> В данном случае, метод может принимать один необязательный аргумент &mdash;
+            литерал объекта с конфигурацией пользователя. Например:
+            <code>TUI.Menu({selector: ".myElement", icon: "&hellip;"})</code>. Если методу не передать аргумент, он
+            сработает только на <code>&lt;ul class=&quot;TUI_Menu&quot;&gt;</code>. Метод возвращает коллекцию
+            обработанных элементов.</p>
+        <ol>
+            <li><code>selector</code> (строка, опционально, по умолчанию ".TUI_Menu"). CSS-селектор/ры списка/ков
+                <code>ul</code> которые нужно трансформировать в меню.
+            </li>
+            <li><code>icon</code> (строка, опционально, по умолчанию "&#8801;"). Текст или HTML на кнопках меню.</li>
+        </ol>
+        <h3>Деактивация плагина на элементе/тах</h3>
+        <p><code>TUI.Menu("kill"[, selector])</code> В данном случае, метод должен принимать первым аргументом команду
+            <code>kill</code>, а вторым, необязательным, CSS-селектор/ры списка/ков <code>ul</code> на которых нужно
+            деактивировать плагин и трансформировать в первоначальный вид. Если методу передать только команду
+            <code>kill</code>, он сработает только на <code>&lt;ul class=&quot;TUI_Menu&quot;&gt;</code>.
+            Метод возвращает коллекцию обработанных элементов.</p>
+        <ol>
+            <li><code>kill</code> (строка, обязательный). Команда деактивации плагина</li>
+            <li><code>selector</code> (строка, опционально, по умолчанию ".TUI_Menu"). CSS-селектор/ры списка/ков
+                <code>ul</code> на которых нужно деактивировать плагин.
+            </li>
+        </ol>
+    </dd>
+</dl>
+
+<!--
+########### Footer
+-->
+
+<footer class="TUI_align-c" id="copy">
+    Веб-разработка и дизайн
+    <a href="mailto:kroloburet@gmail.com">
+        <img src="imgs/i.jpg" alt="Разработка и дизайн сайтов"> kroloburet@gmail.com
+    </a>
+</footer>
+</body>
+</html>
