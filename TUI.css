@@ -10,6 +10,9 @@
  * @author Sergey Nizhnik <kroloburet@gmail.com>
  */
 
+/*---------------------------------------------- Import Font Awesome ---*/
+@import "https://use.fontawesome.com/releases/v5.15.4/css/all.css";
+
 /*---------------------------------------------- TUI variables ---*/
 :root {
     --font-base: 100%/1.5em Arial;

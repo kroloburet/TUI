@@ -16,7 +16,7 @@
 
 1. [Загрузи архив](https://github.com/kroloburet/TUI/archive/refs/heads/main.zip) с TUI и распакуй его или
    клонируй: `https://github.com/kroloburet/TUI.git`
-2. Подключи в документ `TUI.css`, `TUI.js`, `fontawesome` как в примере ниже.
+2. Подключи в документ `TUI.css` и `TUI.js` как в примере ниже.
    ```
    <!doctype html>
    <html lang="en">
@@ -26,10 +26,8 @@
        <meta http-equiv="X-UA-Compatible" content="ie=edge">
        <!-- TUI CSS -->
        <link href="TUI.css" rel="stylesheet">
-       <!-- TUI js -->
+       <!-- TUI JS -->
        <script src="TUI.js" defer></script>
-       <!-- FontAwesome -->
-       <script src="https://kit.fontawesome.com/yourKey.js" defer></script>
        <title>Document</title>
    </head>
    <body>
@@ -40,6 +38,10 @@
    </body>
    </html>
    ```
+
+## Зависимости
+TUI зависит только от [Font Awesome](https://fontawesome.com). Как же без иконок в наше время ;)
+Font Awesome импортирован в файле `TUI.css`.
 
 ## Лицензия
 
