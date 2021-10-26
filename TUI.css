@@ -10,8 +10,17 @@
  * @author Sergey Nizhnik <kroloburet@gmail.com>
  */
 
-/*---------------------------------------------- Import Font Awesome ---*/
+/**
+ * Импорт зависимостей TUI
+ */
 @import "https://use.fontawesome.com/releases/v5.15.4/css/all.css";
+
+/**
+ * Технический класс-метка для блокировки вызова
+ * методов TUI.js на элементе и его предках
+ */
+.TUI_disabled-node {
+}
 
 /*---------------------------------------------- TUI variables ---*/
 :root {
@@ -775,7 +784,7 @@ input[type="button"][disabled], input[type="submit"][disabled], input[type="rese
 }
 
 /*---------------------------------------------- Grid ---*/
-/*--- расчет:((100/кол.ячеек) - margin-left)+(margin-left/кол.ячеек) ---*/
+/*--- расчёт:((100/кол.ячеек) - margin-left)+(margin-left/кол.ячеек) ---*/
 .TUI_row {
     padding: 0;
     margin-bottom: 1.5em;

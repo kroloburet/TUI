@@ -16,6 +16,38 @@ window.TUI = (function () {
      */
 
     /**
+     * TUI не будет обрабатывать элементы
+     * с этими селекторами и их дочерние элементы
+     *
+     * @type {DOMStringList}
+     * @private
+     */
+    const _disabledNodes = [`.TUI_disabled-node`];
+
+    /**
+     * Является ли элемент потомком запрещённого
+     * узла или сам запрещён
+     *
+     * @param {Element} el Проверяемый элемент
+     * @return {boolean}
+     * @private
+     */
+    function _isDisabledNode(el = null) {
+        if (!el) {
+            if ((event instanceof Event) && (event.currentTarget instanceof Element)) el = event.currentTarget;
+        } else {
+            return _disabledNodes.some(selector => {
+                let find = el.closest(selector);
+                if (find) {
+                    let entity = find == el ? `узел` : `элемент`;
+                    console.warn(`TUI обнаружил заблокированный ${entity}:\n`, el, `\nСмотри: ${origin}/TUI/#disabledNodes`);
+                }
+                return find;
+            });
+        }
+    }
+
+    /**
      * Точка входа для плагинов
      *
      * @param {object} methods Методы плагина
@@ -31,7 +63,7 @@ window.TUI = (function () {
             return this.init.apply(this, arguments);
         } else {
             // Метод не существует
-            return console.error(`Вы о чем?! Здесь нет никакого "${methods}"`);
+            return console.error(`Вы о чём?! Здесь нет никакого "${methods}"`);
         }
     }
 
@@ -94,7 +126,7 @@ window.TUI = (function () {
         Toggle(id, display = `block`) {
             const selfName = `Toggle`;
             const content = document.getElementById(id);
-            if (!content) return;
+            if (!content || _isDisabledNode()) return;
             // Обработка появления/скрытия
             const visible = content.style.display;
             if (visible === `none` || content.hidden) {
@@ -116,7 +148,7 @@ window.TUI = (function () {
         Hint(trigger, hideEvent = `mouseout`) {
             const selfName = `Hint`;
             const hint = trigger.nextElementSibling;
-            if (!hint) return;
+            if (!hint || _isDisabledNode(trigger)) return;
             const w = hint.offsetWidth;
             const h = hint.offsetHeight;
             const win = window;
@@ -158,12 +190,13 @@ window.TUI = (function () {
          * @return {object} Поле
          */
         Lim(trigger, limit = 50) {
+            if(_isDisabledNode(trigger)) return;
             const selfName = `Lim`;
             if (typeof limit !== `number`) limit = parseInt(limit);
             let val = trigger.value;
             let counter = trigger.parentElement.querySelector(`span.TUI_${selfName}`);
             const cut = () => trigger.value = trigger.value.substr(0, limit);
-            // Создать и прикрепить счетчик если не определен
+            // Создать и прикрепить счётчик если не определен
             if (!counter) {
                 counter = document.createElement(`span`);
                 // Отступ в поле (начальный)
@@ -174,12 +207,12 @@ window.TUI = (function () {
                 trigger.addEventListener('blur', () => {
                     // Обрезать значение до лимита
                     cut();
-                    // Удалить счетчик
+                    // Удалить счётчик
                     counter.remove();
                     // Вернуть начальный отступ полю
                     trigger.style.paddingRight = paddingR;
                 });
-                // Отступ полю на ширину счетчика
+                // Отступ полю на ширину счётчика
                 trigger.style.paddingRight = counter.offsetWidth + `px`;
             }
             // Обработка длины значения поля
@@ -199,6 +232,7 @@ window.TUI = (function () {
          * @return {object} Элемент
          */
         GoTo(selectorId = null) {
+            if (_isDisabledNode()) return;
             const selfName = `GoTo`;
             // id элемента или хеш в url
             const target = selectorId || location.hash;
@@ -248,7 +282,7 @@ window.TUI = (function () {
                     const conf = Object.assign(defConf, userConf);
                     let notice = document.querySelector(`.TUI_${selfName}`);
                     let id = `_` + Date.now();
-                    // Уведомление еще не создано
+                    // Уведомление ещё не создано
                     if (!notice) {
                         const box = document.createElement(`div`);
                         notice = document.createElement(`div`);
@@ -298,9 +332,8 @@ window.TUI = (function () {
                 // Активация плагина на элементах коллекции
                 const collection = document.querySelectorAll(`.TUI_${selfName}`);
                 collection.forEach(pop => {
-                    // Обрабатывать только неактивный элемент
-                    if (_isActivate(pop, selfName)) return;
-                    // Добавить обертку, кнопки и события
+                    if(_isDisabledNode(pop) || _isActivate(pop, selfName)) return;
+                    // Добавить обёртку, кнопки и события
                     const box = document.createElement(`div`);
                     const close = document.createElement(`span`);
                     const hide = () => {
@@ -322,6 +355,7 @@ window.TUI = (function () {
 
                 // Показать popup по id
                 const pop = document.getElementById(id);
+                if (_isDisabledNode(pop)) return;
                 document.body.classList.add(`TUI_${selfName}-body`);
                 pop.closest(`.TUI_${selfName}-box`).classList.add(`TUI_${selfName}-show`);
                 return pop;
@@ -350,6 +384,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(conf.selector)]
                         .filter(el => el.tagName === `UL`);
                     collection.forEach(menu => {
+                        if (_isDisabledNode(menu)) return;
                         // Деактивировать текущий чтобы переписать конфиг
                         if (_isActivate(menu, selfName)) methods.kill(conf.selector);
                         // Прикрепить элементы управления и классы, прослушку событий
@@ -389,6 +424,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(selector)]
                         .filter(el => el.tagName === `UL` && _isActivate(el, selfName));
                     collection.forEach(menu => {
+                        if (_isDisabledNode(menu)) return;
                         // Удалить динамически созданные кнопки и классы
                         menu.previousElementSibling.remove();
                         menu.querySelectorAll(`.TUI_${selfName}-sub-btn`).forEach(el => el.remove());
@@ -422,6 +458,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(conf.selector)]
                         .filter(el => el.tagName === `DL`);
                     collection.forEach(tab => {
+                        if (_isDisabledNode(tab)) return;
                         // Деактивировать текущий чтобы переписать конфиг
                         if (_isActivate(tab, selfName)) methods.kill(conf.selector);
                         // Добавить классы и прослушку событий
@@ -452,6 +489,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(selector)]
                         .filter(el => el.tagName === `DL` && _isActivate(el, selfName));
                     collection.forEach(tab => {
+                        if (_isDisabledNode(tab)) return;
                         // Удалить привязку событий
                         tab.querySelectorAll(`dt`)
                             .forEach(dt => dt.onclick = null);
@@ -486,6 +524,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(conf.selector)]
                         .filter(el => el.tagName === `INPUT` && el.type === `file`);
                     collection.forEach(inputFile => {
+                        if (_isDisabledNode(inputFile)) return;
                         // Деактивировать текущий чтобы переписать конфиг
                         if (_isActivate(inputFile, selfName)) methods.kill(conf.selector);
                         // Добавить элементы, классы и прослушку событий
@@ -532,6 +571,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(selector)]
                         .filter(el => el.tagName === `INPUT` && el.type === `file` && _isActivate(el, selfName));
                     collection.forEach(inputFile => {
+                        if (_isDisabledNode(inputFile)) return;
                         // Вернуть элемент к состоянию до активации
                         inputFile.nextElementSibling.remove();
                         inputFile.onchange = null;
@@ -564,6 +604,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(conf.selector)]
                         .filter(el => el.tagName === `INPUT` && el.type === `range`);
                     collection.forEach(inputRange => {
+                        if (_isDisabledNode(inputRange)) return;
                         // Деактивировать текущий чтобы переписать конфиг
                         if (_isActivate(inputRange, selfName)) methods.kill(conf.selector);
                         // Добавить элементы, классы и прослушку событий
@@ -588,6 +629,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(selector)]
                         .filter(el => el.tagName === `INPUT` && el.type === `range` && _isActivate(el, selfName));
                     collection.forEach(inputRange => {
+                        if (_isDisabledNode(inputRange)) return;
                         // Вернуть элемент к состоянию до активации
                         inputRange.nextElementSibling.remove();
                         inputRange.onchange = null;
@@ -608,7 +650,7 @@ window.TUI = (function () {
                 selector: `.TUI_${selfName}`,
                 incIcon: `&plus;`,
                 decIcon: `&minus;`,
-                info: `Поставьте курсор в поле и крутите колесико мыши ;)`,
+                info: `Поставьте курсор в поле и крутите колёсико мыши ;)`,
             };
             const methods = {
 
@@ -623,6 +665,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(conf.selector)]
                         .filter(el => el.tagName === `INPUT` && el.type === `number`);
                     collection.forEach(inputNumber => {
+                        if (_isDisabledNode(inputNumber)) return;
                         // Деактивировать текущий чтобы переписать конфиг
                         if (_isActivate(inputNumber, selfName)) methods.kill(conf.selector);
                         // Добавить элементы, валидацию и прослушку событий
@@ -699,6 +742,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(selector)]
                         .filter(el => el.tagName === `INPUT` && el.type === `number` && _isActivate(el, selfName));
                     collection.forEach(inputNumber => {
+                        if (_isDisabledNode(inputNumber)) return;
                         // Вернуть элемент к состоянию до активации
                         inputNumber.parentElement.querySelectorAll(`span`).forEach(el => el.remove());
                         inputNumber.oninput = null;
@@ -732,6 +776,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(conf.selector)]
                         .filter(el => el.tagName === `SELECT`);
                     collection.forEach(select => {
+                        if (_isDisabledNode(select)) return;
                         // Деактивировать текущий чтобы переписать конфиг
                         if (_isActivate(select, selfName)) methods.kill(conf.selector);
                         // Добавить элементы, классы и прослушку событий
@@ -771,6 +816,7 @@ window.TUI = (function () {
                     const collection = [...document.querySelectorAll(selector)]
                         .filter(el => el.tagName === `SELECT` && _isActivate(el, selfName));
                     collection.forEach(select => {
+                        if (_isDisabledNode(select)) return;
                         // Вернуть элемент к состоянию до активации
                         const box = select.parentElement;
                         const e = new Event(`focusout`);
@@ -795,6 +841,7 @@ window.TUI = (function () {
         //             const conf = Object.assign(defConf, userConf);
         //             const collection = document.querySelectorAll(conf.selector);
         //             collection.forEach(element => {
+        //                 if (_isDisabledNode(element)) return;
         //                 if (_isActivate(element, selfName)) methods.kill(conf.selector);
         //
         //                 element.classList.add(`TUI_${selfName}`);
@@ -807,7 +854,7 @@ window.TUI = (function () {
         //         kill(selector = defConf.selector) {
         //             const collection = document.querySelectorAll(selector);
         //             collection.forEach(element => {
-        //                 if (!_isActivate(element, selfName)) return;
+        //                 if (!_isActivate(element, selfName) || _isDisabledNode(element)) return;
         //
         //                 element.classList.remove(`TUI_${selfName}`);
         //                 console.log(`Kill TUI.Plugin() on element:`, element);
