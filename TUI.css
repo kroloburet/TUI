@@ -1297,6 +1297,7 @@ pre.TUI_Hint {
     display: none;
     text-align: center;
     font-style: normal;
+    color: var(--menu-color-font);
     background-color: var(--color-active-bg);
     margin: 0;
     padding: .4em .6em;
